@@ -33,10 +33,12 @@ ifeq ($(OS),Windows_NT)
 
 	OBJ_NAME = main.exe
 else
-	INCLUDE_PATHS := -I$(HOME)/CPP_Projects/PIG/include
+	INCLUDE_PATHS := -I$(HOME)/CPP_Projects/PIG-brccabral/include
+	INCLUDE_PATHS += -I$(HOME)/CPP_Projects/PIG-brccabral/include/SDL
+	INCLUDE_PATHS += -I$(HOME)/CPP_Projects/PIG-brccabral/include/SDL_image
 	INCLUDE_PATHS += -I/usr/include/SDL2
 	
-	COMPILER_FLAGS := -g
+	COMPILER_FLAGS := -g -std=c++11 -w
 	
 	LINKER_FLAGS = -lpthread -lSDL2 -lSDL2_ttf -lSDL2_image
 	
