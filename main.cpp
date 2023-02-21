@@ -5,13 +5,14 @@
 #define MODO_JOGO 0 /// 0 = TREINANDO   - OBS: Aumentar tamanho da populacao para 2000
                     /// 1 = JOGAVEL     - OBS: Diminuir tamanho da populacao para 1
 
-#define POPULACAO_TAMANHO 200
+#define POPULACAO_TAMANHO 2000
 
 #define DINO_BRAIN_QTD_LAYERS 1 /// Quantidade de camadas escondidas na rede neural
 #define DINO_BRAIN_QTD_INPUT 6  /// Quantidade de neuronios na camada de entrada
 #define DINO_BRAIN_QTD_HIDE 6   /// Quantidade de neuronios nas camadas escondidas
 #define DINO_BRAIN_QTD_OUTPUT 3 /// Quantidade de neuronios na camada de saida
 
+#include "DinoRedeNeural.cpp"
 #include "PIG.h"        ///   Biblioteca Grafica
 #include "Sprites.h"    ///   Todos os c�digos sobre sprite
 #include "redeNeural.c" ///   C�digo da rede neural
@@ -396,48 +397,7 @@ void VerificarFimDePartida()
 
 int main(int argc, char *args[])
 {
-    ConfiguracoesIniciais();
-
-    std::thread Desenho(DesenharThread);
-
-    while (PIG_jogoRodando() == 1)
-    {
-        AtualizarJanela();
-        VerificarTeclas();
-
-        if (TempoDecorrido(TimerGeral) >= Periodo)
-        {
-            MovimentarChao();
-            MovimentarMontanhas();
-            MovimentarNuvem();
-            MovimentarObstaculos();
-            MovimentarDinossauros();
-
-            AtualizarFramePassaro();
-            AtualizarFrameDinossauro();
-            AtualizarFrameAviao();
-            AtualizarMelhorDinossauro();
-            AplicarGravidade();
-            AplicarColisao();
-            ControlarEstadoDinossauros();
-
-            if (fabs(VELOCIDADE) < 8)
-            {
-                VELOCIDADE = VELOCIDADE - 0.0005;
-            }
-
-            DistanciaAtual = DistanciaAtual + fabs(VELOCIDADE);
-            if (DistanciaAtual > 1000000 && DistanciaAtual > DistanciaRecorde)
-            {
-                // SalvarRedeArquivo();
-                DinossaurosMortos = POPULACAO_TAMANHO;
-            }
-
-            VerificarFimDePartida();
-            ReiniciarTimer(TimerGeral);
-        }
-    }
-    FinalizarJanela();
+    DinoNeural dinoneural = DinoNeural();
 
     return 0;
 }
