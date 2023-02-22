@@ -276,7 +276,7 @@ void ConfiguracoesIniciais()
 
 using std::unique_ptr;
 
-void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> Strategy)
+void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
 {
     if (DinossaurosMortos == POPULACAO_TAMANHO)
     {
@@ -345,16 +345,7 @@ public:
                     DinossaurosMortos = POPULACAO_TAMANHO;
                 }
 
-                // VerificarFimDePartida(move(strategy));
-                if (DinossaurosMortos == POPULACAO_TAMANHO)
-                {
-                    EncerrarPartida();
-                    if (MODO_JOGO == 0)
-                    {
-                        strategy_->Evolve();
-                    }
-                    InicializarNovaPartida();
-                }
+                VerificarFimDePartida(move(strategy_));
                 ReiniciarTimer(TimerGeral);
             }
         }
