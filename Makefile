@@ -38,7 +38,7 @@ else
 	INCLUDE_PATHS += -I$(HOME)/CPP_Projects/PIG-brccabral/include/SDL_image
 	INCLUDE_PATHS += -I/usr/include/SDL2
 	
-	COMPILER_FLAGS := -g -std=c++11 -w
+	COMPILER_FLAGS := -g -std=c++14 -w
 	
 	LINKER_FLAGS = -lpthread -lSDL2 -lSDL2_ttf -lSDL2_image
 	
