@@ -31,6 +31,8 @@
 #include <thread>
 #include <chrono>
 
+#include "EvolutionaryStrategy.cpp"
+
 ///////////////////////////////////////////////////
 
 void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenhar na tela
@@ -271,6 +273,7 @@ void ConfiguracoesIniciais()
     InicializarNovaPartida();
 }
 
+/*
 void RandomMutations()
 {
     static double RangeRandom = Dinossauros[0].TamanhoDNA;
@@ -380,27 +383,39 @@ void RandomMutations()
 
     Geracao++;
 }
+*/
 
-void VerificarFimDePartida()
+using std::unique_ptr;
+
+void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> Strategy)
 {
     if (DinossaurosMortos == POPULACAO_TAMANHO)
     {
         EncerrarPartida();
         if (MODO_JOGO == 0)
         {
-            RandomMutations();
+            Strategy->Evolve();
         }
         InicializarNovaPartida();
     }
 }
 
+
+using std::move;
+using std::make_unique;
+
 class DinoRN
 {
 private:
-    /* data */
+    unique_ptr<EvolutionaryStrategy> strategy_;
 
 public:
-    DinoRN(/* args */)
+    void set_strategy(unique_ptr<EvolutionaryStrategy> &&strategy)
+    {
+        strategy_ = move(strategy);
+    }
+
+    DinoRN(unique_ptr<EvolutionaryStrategy> &&strategy = make_unique<RandMutations>()) : strategy_(move(strategy)) 
     {
         ConfiguracoesIniciais();
 
@@ -439,7 +454,7 @@ public:
                     DinossaurosMortos = POPULACAO_TAMANHO;
                 }
 
-                VerificarFimDePartida();
+                VerificarFimDePartida(move(strategy));
                 ReiniciarTimer(TimerGeral);
             }
         }
