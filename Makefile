@@ -21,13 +21,13 @@ CC = g++
 #OBJ_NAME specifies the name of our exectuable
 
 ifeq ($(OS),Windows_NT)
-	INCLUDE_PATHS := -ID:\CPP_Projects\PIG\include
-	INCLUDE_PATHS += -ID:\CPP_Projects\PIG\include\SDL
-	INCLUDE_PATHS += -ID:\CPP_Projects\PIG\include\SDL_image
+	INCLUDE_PATHS := -IC:\CPP_Projects\pig-brccabral\include
+	INCLUDE_PATHS += -IC:\CPP_Projects\pig-brccabral\include\SDL
+	INCLUDE_PATHS += -IC:\CPP_Projects\pig-brccabral\include\SDL_image
 	
-	LIBRARY_PATHS := -LD:\CPP_Projects\PIG\lib_x64
+	LIBRARY_PATHS := -LD:\CPP_Projects\pig-brccabral\lib_x64
 	
-	COMPILER_FLAGS := -g -Wl,-subsystem,windows
+	COMPILER_FLAGS := -g -std=c++14 -w
 	
 	LINKER_FLAGS = -lpthread -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf -lSDL2_image
 
