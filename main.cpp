@@ -12,7 +12,7 @@
 #define DINO_BRAIN_QTD_HIDE 6   /// Quantidade de neuronios nas camadas escondidas
 #define DINO_BRAIN_QTD_OUTPUT 3 /// Quantidade de neuronios na camada de saida
 
-#include "DinoRedeNeural.cpp"
+#include "DinoRN.cpp"
 #include "PIG.h"        ///   Biblioteca Grafica
 #include "Sprites.h"    ///   Todos os c�digos sobre sprite
 #include "redeNeural.c" ///   C�digo da rede neural
@@ -397,7 +397,7 @@ void VerificarFimDePartida()
 
 int main(int argc, char *args[])
 {
-    DinoNeural dinoneural = DinoNeural();
+    DinoRN dinoneural = DinoRN();
 
     return 0;
 }

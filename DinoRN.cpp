@@ -1,4 +1,36 @@
-class DinoNeural
+#define PASSARO_CODIGO_TIPO 5
+#define ESPINHO_CODIGO_TIPO 6
+
+#define MODO_JOGO 0 /// 0 = TREINANDO   - OBS: Aumentar tamanho da populacao para 2000
+                    /// 1 = JOGAVEL     - OBS: Diminuir tamanho da populacao para 1
+
+#define POPULACAO_TAMANHO 2000
+
+#define DINO_BRAIN_QTD_LAYERS 1 /// Quantidade de camadas escondidas na rede neural
+#define DINO_BRAIN_QTD_INPUT 6  /// Quantidade de neuronios na camada de entrada
+#define DINO_BRAIN_QTD_HIDE 6   /// Quantidade de neuronios nas camadas escondidas
+#define DINO_BRAIN_QTD_OUTPUT 3 /// Quantidade de neuronios na camada de saida
+
+#include "PIG.h"        ///   Biblioteca Grafica
+#include "Sprites.h"    ///   Todos os c�digos sobre sprite
+#include "redeNeural.c" ///   C�digo da rede neural
+#include "Tipos.h"      ///   Defini��es de structs
+#include "Variaveis.h"  ///   Variaveis globais
+#include "FuncoesAuxiliares.h"
+#include "DNAs.h"
+#include "Desenhar.h"
+#include "GeradorObstaculos.h"
+#include "Inicializar.h"
+#include "Alocacoes.h"
+#include "Colisao.h"
+#include "Movimentar.h"
+#include "Atualizar.h"
+#include "InputsRedeNeural.h" /// Fun��es que captam a informa��o para entregar para a rede neural
+
+#include <thread>
+#include <chrono>
+
+class DinoRN
 {
 private:
     /* data */
