@@ -10,31 +10,26 @@ vector<T> arrayToVector(T (&arr)[S])
     for (size_t i = 0; i < S; i++)
     {
         v.push_back(arr[i]);
-        v.at(i) += 1;
+        v[i].Fitness = v[i].Fitness + 1;
     }
     return v;
 }
 
-vector<Dinossauro> &getRodaDaFortuna(vector<Dinossauro> d)
+vector<int> getRouletteWheel(vector<Dinossauro> d)
 {
-    double fitnessTotal = 0.0;
     vector<Dinossauro>::iterator di;
 
+    vector<int> rouletteWheel = {0};
+
+    int previous = 0;
     for (di = d.begin(); di != d.end(); ++di)
     {
-        fitnessTotal += di->Fitness;
+        int actual = di->Fitness;
+        int newPos = previous + actual;
+        rouletteWheel.push_back(newPos);
+
+        previous = newPos;
     }
 
-    cout << "Fitnesses / Normas: " << endl;
-
-    vector<Dinossauro> dnorm = {};
-    for (di = d.begin(); di != d.end(); ++di)
-    {
-        cout << di->Fitness << " / ";
-        di->Fitness = di->Fitness / fitnessTotal;
-        cout << di->Fitness;
-        dnorm.push_back(*di);
-    }
-
-    return dnorm;
+    return rouletteWheel;
 }
