@@ -1,35 +1,22 @@
+#include <vector>
+
 class RandMutations : public EvolutionaryStrategy
 {
 public:
-    void Evolve()
+    void Evolve(std::vector<Dinossauro> &d)
     {
         static double RangeRandom = Dinossauros[0].TamanhoDNA;
 
         Dinossauro *Vetor[POPULACAO_TAMANHO];
         Dinossauro *Temp;
 
-        if (Geracao < LARG_GRAFICO)
-        {
-            GeracaoCompleta = Geracao + 1;
-            BestFitnessPopulacao[Geracao] = BestFitnessGeracao();
-            MediaFitnessPopulacao[Geracao] = MediaFitnessGeracao();
-        }
-        else
-        {
-            for (int i = 0; i < LARG_GRAFICO - 1; i++)
-            {
-                BestFitnessPopulacao[i] = BestFitnessPopulacao[i + 1];
-                MediaFitnessPopulacao[i] = MediaFitnessPopulacao[i + 1];
-            }
-            BestFitnessPopulacao[GeracaoCompleta] = BestFitnessGeracao();
-            MediaFitnessPopulacao[GeracaoCompleta] = MediaFitnessGeracao();
-        }
-
+        /* Guarda a referência de cada dinossauro em Vetor */
         for (int i = 0; i < POPULACAO_TAMANHO; i++)
         {
             Vetor[i] = &Dinossauros[i];
         }
 
+        /* Bubble sort pra ordenar os dinossauros de forma decrescente pelo seu Fitness*/
         for (int i = 0; i < POPULACAO_TAMANHO; i++)
         {
             for (int j = 0; j < POPULACAO_TAMANHO - 1; j++)

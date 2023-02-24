@@ -30,9 +30,11 @@
 
 #include <thread>
 #include <chrono>
+#include <vector>
 
 #include "EvolutionaryStrategy.cpp"
 #include "RandMutations.cpp"
+#include "utils.cpp"
 
 ///////////////////////////////////////////////////
 
@@ -274,7 +276,7 @@ void ConfiguracoesIniciais()
     InicializarNovaPartida();
 }
 
-using std::unique_ptr;
+using namespace std;
 
 void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
 {
@@ -283,15 +285,34 @@ void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
         EncerrarPartida();
         if (MODO_JOGO == 0)
         {
-            Strategy->Evolve();
+            /* Atualiza o gráfico a cada fim da partida */
+            if (Geracao < LARG_GRAFICO)
+            {
+                GeracaoCompleta = Geracao + 1;
+                BestFitnessPopulacao[Geracao] = BestFitnessGeracao();
+                MediaFitnessPopulacao[Geracao] = MediaFitnessGeracao();
+            }
+            else
+            {
+                for (int i = 0; i < LARG_GRAFICO - 1; i++)
+                {
+                    BestFitnessPopulacao[i] = BestFitnessPopulacao[i + 1];
+                    MediaFitnessPopulacao[i] = MediaFitnessPopulacao[i + 1];
+                }
+                BestFitnessPopulacao[GeracaoCompleta] = BestFitnessGeracao();
+                MediaFitnessPopulacao[GeracaoCompleta] = MediaFitnessGeracao();
+            }
+
+            vector<dinossauro> d = arrayToVector(Dinossauros);
+
+            Strategy->Evolve(d);
         }
         InicializarNovaPartida();
     }
 }
 
-
-using std::move;
 using std::make_unique;
+using std::move;
 
 class DinoRN
 {
@@ -304,10 +325,12 @@ public:
         strategy_ = move(strategy);
     }
 
-    DinoRN(unique_ptr<EvolutionaryStrategy> &&strategy = make_unique<RandMutations>()) : strategy_(move(strategy)) 
-    {}
+    DinoRN(unique_ptr<EvolutionaryStrategy> &&strategy = make_unique<RandMutations>()) : strategy_(move(strategy))
+    {
+    }
 
-    void startGame() {
+    void startGame()
+    {
         ConfiguracoesIniciais();
 
         std::thread Desenho(DesenharThread);
