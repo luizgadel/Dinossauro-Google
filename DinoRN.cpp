@@ -5,7 +5,7 @@
 #define MODO_JOGO 0 /// 0 = TREINANDO   - OBS: Aumentar tamanho da populacao para 2000
                     /// 1 = JOGAVEL     - OBS: Diminuir tamanho da populacao para 1
 
-#define POPULACAO_TAMANHO 2000
+#define POPULACAO_TAMANHO 500
 
 #define DINO_BRAIN_QTD_LAYERS 1 /// Quantidade de camadas escondidas na rede neural
 #define DINO_BRAIN_QTD_INPUT 6  /// Quantidade de neuronios na camada de entrada
@@ -305,7 +305,10 @@ void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
 
             vector<dinossauro> d = arrayToVector(Dinossauros);
 
-            Strategy->Evolve(d);
+            int tamDNA = (*d.begin()).TamanhoDNA;
+            vector<vector<double>> DNAs = matrixToVector(DNADaVez, tamDNA);
+            
+            Strategy->Evolve(d, DNAs);
         }
         InicializarNovaPartida();
     }

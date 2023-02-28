@@ -1,7 +1,9 @@
 #include<vector>
 
+using namespace std;
+
 class EvolutionaryStrategy
 {
 public:
-    virtual void Evolve(std::vector<Dinossauro> &d) = 0;
+    virtual void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs) = 0;
 };

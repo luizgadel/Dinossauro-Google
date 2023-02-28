@@ -1,9 +1,11 @@
 #include <vector>
 
+using namespace std;
+
 class RandMutations : public EvolutionaryStrategy
 {
 public:
-    void Evolve(std::vector<Dinossauro> &d)
+    void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
     {
         static double RangeRandom = Dinossauros[0].TamanhoDNA;
 
