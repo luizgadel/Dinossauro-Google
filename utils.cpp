@@ -12,8 +12,19 @@ vector<T> arrayToVector(T (&arr)[S])
     for (size_t i = 0; i < S; i++)
     {
         v.push_back(arr[i]);
-        v[i].Fitness = v[i].Fitness + 1;
     }
+    return v;
+}
+
+
+vector<double> pointerArrayToVector(double *arr, int len)
+{
+    vector<double> v = {};
+    for (int i = 0; i < len; i++)
+    {
+        v.push_back(arr[i]);
+    }
+
     return v;
 }
 
@@ -67,15 +78,40 @@ double randn()
 void printDoubleVector(vector<double> vect)
 {
     vector<double>::iterator it;
-    printf("[");
+    cout << "[";
     for (it = vect.begin(); it != vect.begin() + 5; ++it)
     {
-        printf(" %.2f", *it);
+        cout << " " << *it;
     }
     printf(" ...");
-    for (it = vect.end() - 6; it != vect.end(); ++it)
+    for (it = vect.end() - 5; it != vect.end(); ++it)
     {
-        printf(" %.2f", *it);
+        cout << " " << *it;
     }
-    printf("]\n");
+    cout << "]" << endl;
+}
+
+void printDinoData(int k, Dinossauro dino, vector<double> genes) {
+    cout << "Dinossauro " << k << ": " << "\t" << dino.Fitness << " - \t"; 
+    printDoubleVector(genes);
+}
+
+void printGenerationData(vector<Dinossauro> d, vector<vector<double>> dnas) {
+    Dinossauro dino;
+    vector<double> genes;
+
+    vector<vector<double>>::iterator dnaIt = dnas.begin();
+    vector<Dinossauro>::iterator dinoIt = d.begin();
+    int k = 0;
+    for (dnaIt = dnas.begin(); dnaIt != dnas.end(); ++dnaIt)
+    {
+
+        dino = *dinoIt;
+        genes = *dnaIt;
+        
+        printDinoData(k, dino, genes);
+        
+        ++dinoIt;
+        k++;
+    }
 }
