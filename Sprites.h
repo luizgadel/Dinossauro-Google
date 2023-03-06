@@ -70,8 +70,8 @@ Sprite getMontanhaSprite(int codigo)
 {
     Sprite sprite;
 
-    sprite.Largura = 1366;
-    sprite.Altura = 180;
+    sprite.Largura = LARG_TELA;
+    sprite.Altura = ALT_TELA * 0.235;
 
     switch (codigo)
     {
@@ -185,8 +185,8 @@ Sprite getNuvemSprite()
     Sprite sprite;
 
     sprite.Objeto = CriarSprite("imagens/nuvem.bmp");
-    sprite.Largura = 46;
-    sprite.Altura = 13;
+    sprite.Largura = LARG_TELA * 0.034;
+    sprite.Altura = ALT_TELA * 0.017;
 
     return sprite;
 }

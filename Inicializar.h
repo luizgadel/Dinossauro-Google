@@ -35,8 +35,8 @@ void InicializarNuvens()
 
     for (int i = 0; i < NUVEM_QUANTIDADE; i++)
     {
-        double X = (rand() % 1100) + 50;
-        double Y = (rand() % 140) + 100;
+        double X = (rand() % LARG_TELA * 0.8) + LARG_TELA * 0.0375;
+        double Y = (rand() % ALT_TELA * 0.18 ) + ALT_TELA * 0.13;
         if (existeNuvem(X, Y) == 0)
         {
             nuvem[i].X = X;

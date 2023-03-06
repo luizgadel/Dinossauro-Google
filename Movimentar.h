@@ -34,9 +34,9 @@ void MovimentarNuvem()
     for (int i = 0; i < NUVEM_QUANTIDADE; i++)
     {
         nuvem[i].X = nuvem[i].X + VELOCIDADE * 0.01;
-        if (nuvem[i].X < -23.0)
+        if (nuvem[i].X < -nuvem[i].sprite.Largura)
         {
-            nuvem[i].X = nuvem[i].X + LARG_TELA + 46.0;
+            nuvem[i].X = nuvem[i].X + LARG_TELA + nuvem[i].sprite.Largura;
         }
     }
 }

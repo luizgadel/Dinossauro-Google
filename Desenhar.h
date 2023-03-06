@@ -39,19 +39,19 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
     double EscalaAltura = ((double)AlturaPintura) / (double)(qtdNeuroEscondidas - 1);
     double EscalaLargura = ((double)LarguraPintura - 475) / (double)(qtdEscondidas + 1);
 
-    sprintf(String, "[Obstáculo] Distancia: %.2f", Entrada[0]);
+    sprintf(String, "[Obstï¿½culo] Distancia: %.2f", Entrada[0]);
     EscreverEsquerda(String, X + 15, YOrigem - 0 * EscalaAltura - 5, Fonte);
 
-    sprintf(String, "[Obstáculo] Largura: %.2f", Entrada[1]);
+    sprintf(String, "[Obstï¿½culo] Largura: %.2f", Entrada[1]);
     EscreverEsquerda(String, X + 15, YOrigem - 1 * EscalaAltura - 5, Fonte);
 
-    sprintf(String, "[Obstáculo] Altura: %.2f", Entrada[2]);
+    sprintf(String, "[Obstï¿½culo] Altura: %.2f", Entrada[2]);
     EscreverEsquerda(String, X + 15, YOrigem - 2 * EscalaAltura - 5, Fonte);
 
-    sprintf(String, "[Obstáculo] Comprimento: %.2f", Entrada[3]);
+    sprintf(String, "[Obstï¿½culo] Comprimento: %.2f", Entrada[3]);
     EscreverEsquerda(String, X + 15, YOrigem - 3 * EscalaAltura - 5, Fonte);
 
-    sprintf(String, "[Cenário] Velocidade: %.2f", Entrada[4]);
+    sprintf(String, "[Cenï¿½rio] Velocidade: %.2f", Entrada[4]);
     EscreverEsquerda(String, X + 15, YOrigem - 4 * EscalaAltura - 5, Fonte);
 
     sprintf(String, "[Dinossauro] Altura: %.2f", Entrada[5]);
@@ -67,7 +67,7 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
 
     if (DINO_BRAIN_QTD_OUTPUT == 3)
     {
-        sprintf(String, "Avião");
+        sprintf(String, "Aviï¿½o");
         EscreverEsquerda(String, X + Largura - 100, temp - 2 * EscalaAltura - 5, Fonte);
     }
 
@@ -215,13 +215,13 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
                        NeuroEntradaX[i],
                        NeuroEntradaY[i],
                        3.5 * TamanhoNeuronio,
-                       3.5 * TamanhoNeuronio, 0, 0);
+                       3.5 * TamanhoNeuronio, 0, 1);
 
         DesenharSprite(SpriteNeuronAtivado,
                        NeuroEntradaX[i],
                        NeuroEntradaY[i],
                        TamanhoNeuronio,
-                       TamanhoNeuronio, 0, 0);
+                       TamanhoNeuronio, 0, 1);
 
         DefinirOpacidade(SpriteLuz, 255);
         DefinirColoracao(SpriteNeuronAtivado, BRANCO);
@@ -230,7 +230,7 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
                        NeuroEntradaX[i] - 56,
                        NeuroEntradaY[i],
                        64,
-                       12, 0, 0);
+                       12, 0, 1);
     }
 
     for (int i = 0; i < qtdEscondidas; i++)
@@ -248,14 +248,14 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
                                NeuroEscondidoX[i][j],
                                NeuroEscondidoY[i][j],
                                3.5 * TamanhoNeuronio,
-                               3.5 * TamanhoNeuronio, 0, 0);
+                               3.5 * TamanhoNeuronio, 0, 1);
             }
 
             DesenharSprite(Sprite,
                            NeuroEscondidoX[i][j],
                            NeuroEscondidoY[i][j],
                            TamanhoNeuronio,
-                           TamanhoNeuronio, 0, 0);
+                           TamanhoNeuronio, 0, 1);
         }
     }
 
@@ -270,14 +270,14 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
                            NeuroSaidaX[i],
                            NeuroSaidaY[i],
                            3.5 * TamanhoNeuronio,
-                           3.5 * TamanhoNeuronio, 0, 0);
+                           3.5 * TamanhoNeuronio, 0, 1);
         }
 
         DesenharSprite(Sprite,
                        NeuroSaidaX[i],
                        NeuroSaidaY[i],
                        TamanhoNeuronio,
-                       TamanhoNeuronio, 0, 0);
+                       TamanhoNeuronio, 0, 1);
     }
 }
 
@@ -365,7 +365,7 @@ void DesenharObstaculos()
                        obstaculo[i].Y,
                        obstaculo[i].sprite[obstaculo[i].FrameAtual]->Largura,
                        obstaculo[i].sprite[obstaculo[i].FrameAtual]->Altura,
-                       0, 1);
+                       0, 0);
     }
 }
 
@@ -421,7 +421,7 @@ void DesenharAviao(int i)
                        Dinossauros[i].X + 13,
                        Dinossauros[i].Y + 12,
                        SpriteAviao[Dinossauros[i].FrameAviao].Largura,
-                       SpriteAviao[Dinossauros[i].FrameAviao].Altura, 0, 0);
+                       SpriteAviao[Dinossauros[i].FrameAviao].Altura, 0, 1);
     }
 }
 
@@ -441,7 +441,7 @@ void DesenharDinossauros()
                        Dinossauros[i].Y,
                        Largura,
                        Altura,
-                       0, 1);
+                       0, 0);
 
         DesenharAviao(i);
     }
@@ -467,7 +467,7 @@ void Desenhar()
 
         char String[1000];
 
-        sprintf(String, "Geração: %d", Geracao);
+        sprintf(String, "Geraï¿½ï¿½o: %d", Geracao);
         EscreverEsquerda(String, 20, BASE, Fonte);
 
         sprintf(String, "Clock: %f segundo", Periodo);

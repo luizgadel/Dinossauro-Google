@@ -4,7 +4,7 @@ int existeNuvem(double X, double Y)
 {
     for (int i = 0; i < NUVEM_QUANTIDADE; i++)
     {
-        if (DistanciaEntrePontos(X, Y, nuvem[i].X, nuvem[i].Y) < 46)
+        if (DistanciaEntrePontos(X, Y, nuvem[i].X, nuvem[i].Y) < nuvem[i].sprite.Largura)
         {
             return 1;
         }
