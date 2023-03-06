@@ -24,7 +24,7 @@ private:
         vector<int> parentPositions = {};
         for (int i = 0; i < numParents; i++)
         {
-            int randValue = rand() % limite;
+            int randValue = rand() % limite; 
             vector<int>::iterator rsi = rouletteWheel.begin();
 
             while (randValue > *rsi)
@@ -67,36 +67,39 @@ private:
     {
         int bestDinoPos = findBestDinoPos(d, DNAs);
 
-        if (d[bestDinoPos].Fitness == lastGen[lastGenBestDinoPos].Fitness)
-        {
-            bestFitnessDidntChange += 1;
-        }
-        else
-        {
-            bestFitnessDidntChange = 0;
+        if (Geracao > 0) {
+            if (d[bestDinoPos].Fitness == lastGen[lastGenBestDinoPos].Fitness)
+            {
+                bestFitnessDidntChange += 1;
+            }
+            else
+            {
+                bestFitnessDidntChange = 0;
+            }
+
+            if (bestFitnessDidntChange > 10)
+                cout << "Melhor fitness não muda há 10 gerações: " << d[bestDinoPos].Fitness << endl;
         }
 
         lastGenBestDinoPos = bestDinoPos;
 
-        if (bestFitnessDidntChange > 10)
-            cout << "Melhor fitness não muda há 10 gerações: " << d[bestDinoPos].Fitness << endl;
     }
 
     void updateLastGenVector(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
     {
         vector<Dinossauro>::iterator di;
 
-        cout << "Atualizando última geração..." << endl;
-        lastGen = {};
-        lastGenBestDinoPos = 0;
+        saveLastGenBestDino(d, DNAs);
 
+        lastGen = {};
         int i = 0;
         for (di = d.begin(); di != d.end(); ++di)
         {
-            lastGen.push_back(*di);
+            Dinossauro dino = *di;
+            lastGen.push_back(dino);
+            lastGen.at(i).DNA = vectorToPointerArray(DNAs[i]);
+            i++;
         }
-
-        saveLastGenBestDino(d, DNAs);
     }
 
     int findWorstDinoPos(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
@@ -131,9 +134,10 @@ private:
 
         cout << endl
              << "Substituindo pelo melhor da última geração..." << endl;
+        vector<double> lastGenBestDNA = pointerArrayToVector(lastGen[lastGenBestDinoPos].DNA, dnaSize);
+        printDinoData(lastGenBestDinoPos, lastGen[lastGenBestDinoPos], lastGenBestDNA);
 
         d[worstDinoPos] = lastGen[lastGenBestDinoPos];
-        vector<double> lastGenBestDNA = pointerArrayToVector(lastGen[lastGenBestDinoPos].DNA, dnaSize);
         DNAs[worstDinoPos] = lastGenBestDNA;
 
         printDinoData(worstDinoPos, d[worstDinoPos], DNAs[worstDinoPos]);
@@ -232,7 +236,7 @@ public:
 
             for (int j = 0; j < dnaSize; j++)
             {
-                Dinossauros[i].DNA[j] = childDNA.at(j);
+                DNADaVez[i][j] = childDNA.at(j);
             }
 
             Dinossauros[i].ResetarFitness = 1;

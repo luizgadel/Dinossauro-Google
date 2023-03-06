@@ -16,6 +16,19 @@ vector<T> arrayToVector(T (&arr)[S])
     return v;
 }
 
+double *vectorToPointerArray(vector<double> v)
+{
+    vector<double>::iterator vi;
+    int dnaSize = v.size();
+    double *ptr = (double *)malloc(dnaSize * sizeof(double));
+    int i = 0;
+    for (vi = v.begin(); vi != v.end(); ++vi)
+    {
+        ptr[i] = *vi;
+        i++;
+    }
+    return ptr;
+}
 
 vector<double> pointerArrayToVector(double *arr, int len)
 {
@@ -75,9 +88,10 @@ double randn()
     return unif(rng);
 }
 
-void printDoubleVector(vector<double> vect)
+template <typename T>
+void printVector(vector<T> vect)
 {
-    vector<double>::iterator it;
+    typename vector<T>::iterator it;
     cout << "[";
     for (it = vect.begin(); it != vect.begin() + 5; ++it)
     {
@@ -91,12 +105,15 @@ void printDoubleVector(vector<double> vect)
     cout << "]" << endl;
 }
 
-void printDinoData(int k, Dinossauro dino, vector<double> genes) {
-    cout << "Dinossauro " << k << ": " << "\t" << dino.Fitness << " - \t"; 
-    printDoubleVector(genes);
+void printDinoData(int k, Dinossauro dino, vector<double> genes)
+{
+    cout << "Dinossauro " << k << ": "
+         << "\t" << dino.Fitness << " ";
+    printVector(genes);
 }
 
-void printGenerationData(vector<Dinossauro> d, vector<vector<double>> dnas) {
+void printGenerationData(vector<Dinossauro> d, vector<vector<double>> dnas)
+{
     Dinossauro dino;
     vector<double> genes;
 
@@ -108,10 +125,28 @@ void printGenerationData(vector<Dinossauro> d, vector<vector<double>> dnas) {
 
         dino = *dinoIt;
         genes = *dnaIt;
-        
+
         printDinoData(k, dino, genes);
-        
+
         ++dinoIt;
+        k++;
+    }
+}
+
+void printGenerationData(vector<Dinossauro> d)
+{
+    Dinossauro dino;
+    vector<double> genes;
+
+    vector<Dinossauro>::iterator dinoIt;
+    int k = 0;
+    for (dinoIt = d.begin(); dinoIt != d.end(); ++dinoIt)
+    {
+
+        dino = *dinoIt;
+        genes = pointerArrayToVector(dino.DNA, dino.TamanhoDNA);
+
+        printDinoData(k, dino, genes);
         k++;
     }
 }
