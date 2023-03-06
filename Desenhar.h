@@ -39,19 +39,19 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
     double EscalaAltura = ((double)AlturaPintura) / (double)(qtdNeuroEscondidas - 1);
     double EscalaLargura = ((double)LarguraPintura - 475) / (double)(qtdEscondidas + 1);
 
-    sprintf(String, "[Obst�culo] Distancia: %.2f", Entrada[0]);
+    sprintf(String, "[Obstaculo] Distancia: %.2f", Entrada[0]);
     EscreverEsquerda(String, X + 15, YOrigem - 0 * EscalaAltura - 5, Fonte);
 
-    sprintf(String, "[Obst�culo] Largura: %.2f", Entrada[1]);
+    sprintf(String, "[Obstaculo] Largura: %.2f", Entrada[1]);
     EscreverEsquerda(String, X + 15, YOrigem - 1 * EscalaAltura - 5, Fonte);
 
-    sprintf(String, "[Obst�culo] Altura: %.2f", Entrada[2]);
+    sprintf(String, "[Obstaculo] Altura: %.2f", Entrada[2]);
     EscreverEsquerda(String, X + 15, YOrigem - 2 * EscalaAltura - 5, Fonte);
 
-    sprintf(String, "[Obst�culo] Comprimento: %.2f", Entrada[3]);
+    sprintf(String, "[Obstaculo] Comprimento: %.2f", Entrada[3]);
     EscreverEsquerda(String, X + 15, YOrigem - 3 * EscalaAltura - 5, Fonte);
 
-    sprintf(String, "[Cen�rio] Velocidade: %.2f", Entrada[4]);
+    sprintf(String, "[Cenario] Velocidade: %.2f", Entrada[4]);
     EscreverEsquerda(String, X + 15, YOrigem - 4 * EscalaAltura - 5, Fonte);
 
     sprintf(String, "[Dinossauro] Altura: %.2f", Entrada[5]);
@@ -67,7 +67,7 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
 
     if (DINO_BRAIN_QTD_OUTPUT == 3)
     {
-        sprintf(String, "Avi�o");
+        sprintf(String, "Aviao");
         EscreverEsquerda(String, X + Largura - 100, temp - 2 * EscalaAltura - 5, Fonte);
     }
 
@@ -449,7 +449,14 @@ void DesenharDinossauros()
 
 void Desenhar()
 {
-    int BASE = 360;
+    int margin = 20;
+    int altGrafico = 350;
+    int yGrafico = ALT_TELA - altGrafico - margin;
+    int altRede = 350;
+    int largRede = 700;
+    int yRede = ALT_TELA - altRede - 2*margin;
+    int xRede = LARG_GRAFICO + 65;
+    int BASE = yGrafico - margin;
 
     if (DesenharTela == 1)
     {
@@ -462,31 +469,39 @@ void Desenhar()
         DesenharObstaculos();
         DesenharDinossauros();
 
-        DesenharRedeNeural(665, 360, 700, 350);
-        DesenharGrafico(20, 390, LARG_GRAFICO, 350);
+        DesenharGrafico(margin, yGrafico, LARG_GRAFICO, altGrafico);
+        DesenharRedeNeural(xRede, yRede, largRede, altRede);
 
         char String[1000];
 
-        sprintf(String, "Gera��o: %d", Geracao);
-        EscreverEsquerda(String, 20, BASE, Fonte);
+        sprintf(String, "Geracao: %d", Geracao);
+        EscreverEsquerda(String, margin, BASE, Fonte);
 
+        BASE -= margin;
         sprintf(String, "Clock: %f segundo", Periodo);
-        EscreverEsquerda(String, 20, BASE - 20, Fonte);
+        EscreverEsquerda(String, margin, BASE, Fonte);
 
+        BASE -= margin;
+        sprintf(String, "Dinossauros vivos: %d de %d dinossauros.", (POPULACAO_TAMANHO - DinossaurosMortos), POPULACAO_TAMANHO);
+        EscreverEsquerda(String, margin, BASE, Fonte);
+
+        BASE -= margin;
         sprintf(String, "Velocidade: %.2f (%.0f pixels por segundo)", fabs(VELOCIDADE), fabs(VELOCIDADE) / Periodo);
-        EscreverEsquerda(String, 20, BASE - 40, Fonte);
+        EscreverEsquerda(String, margin, BASE, Fonte);
 
+        BASE -= margin;
         sprintf(String, "Distancia Recorde:");
-        EscreverEsquerda(String, 20, BASE - 60, Fonte);
+        EscreverEsquerda(String, margin, BASE, Fonte);
 
         sprintf(String, "%.0f pixels", DistanciaRecorde);
-        EscreverEsquerda(String, 150, BASE - 60, FonteAzul);
+        EscreverEsquerda(String, 150, BASE, FonteAzul);
 
+        BASE -= margin;
         sprintf(String, "Distancia Atual:");
-        EscreverEsquerda(String, 20, BASE - 80, Fonte);
+        EscreverEsquerda(String, margin, BASE, Fonte);
 
         sprintf(String, "%.0f pixels", DistanciaAtual);
-        EscreverEsquerda(String, 150, BASE - 80, Fonte);
+        EscreverEsquerda(String, 150, BASE, Fonte);
 
         EncerrarDesenho();
     }
