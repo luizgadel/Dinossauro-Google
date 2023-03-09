@@ -42,7 +42,9 @@ void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenha
 {
     while (PIG_jogoRodando() == 1)
     {
-        Desenhar();
+        vector<Dinossauro> d = arrayToVector(Dinossauros);
+        vector<Dinossauro> topFive = getTopFive(d);
+        Desenhar(topFive);
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 }
@@ -252,7 +254,7 @@ void CarregarRede()
 
 void ConfiguracoesIniciais()
 {
-    CriarJanela("Google Dinosaur", 0);
+    CriarJanela("Google Dinossaur", 0);
     InicializarSprites();
 
     InicializarChao();
@@ -307,7 +309,7 @@ void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
 
             int tamDNA = (*d.begin()).TamanhoDNA;
             vector<vector<double>> DNAs = matrixToVector(DNADaVez, tamDNA);
-            
+
             Strategy->Evolve(d, DNAs);
         }
         InicializarNovaPartida();

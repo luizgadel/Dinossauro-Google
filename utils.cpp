@@ -150,3 +150,50 @@ void printGenerationData(vector<Dinossauro> d)
         k++;
     }
 }
+
+template <typename T>
+vector<T> sliceV(vector<T> v, int start, int end)
+{
+    vector<T> slicedVector = {};
+
+    T vi;
+    int i = 0;
+    if (start <= end)
+    {
+
+        for (i = start; i < end; ++i)
+        {
+            vi = v.at(i);
+            slicedVector.push_back(vi);
+        }
+    }
+    else
+    {
+        cout << "Erro na função slice: início (" << start << ") é maior que o fim (" << end << ")." << endl;
+    }
+
+    return slicedVector;
+}
+
+vector<Dinossauro> getTopFive(vector<Dinossauro> d)
+{
+    vector<Dinossauro>::iterator di = d.begin();
+    int numberOfDinos = d.size();
+    Dinossauro dinoAux;
+
+    for (int i = 0; i < numberOfDinos; i++)
+    {
+        for (int j = 0; j < numberOfDinos - 1; j++)
+        {
+            if (d.at(j).Fitness < d.at(j + 1).Fitness)
+            {
+                dinoAux = d.at(j);
+                d.at(j) = d.at(j + 1);
+                d.at(j + 1) = dinoAux;
+            }
+        }
+    }
+
+    vector<Dinossauro> topFive = sliceV(d, 0, 5);
+    return topFive;
+}

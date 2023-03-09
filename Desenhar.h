@@ -1,4 +1,6 @@
+#include <vector>
 
+using namespace std;
 
 PIG_Cor calcularCor(double Intensidade, PIG_Cor CorBase)
 {
@@ -447,14 +449,14 @@ void DesenharDinossauros()
     }
 }
 
-void Desenhar()
+void Desenhar(vector<Dinossauro> topFive)
 {
     int margin = 20;
     int altGrafico = 350;
     int yGrafico = ALT_TELA - altGrafico - margin;
     int altRede = 350;
     int largRede = 700;
-    int yRede = ALT_TELA - altRede - 2*margin;
+    int yRede = ALT_TELA - altRede - 2 * margin;
     int xRede = LARG_GRAFICO + 65;
     int BASE = yGrafico - margin;
 
@@ -482,7 +484,7 @@ void Desenhar()
         EscreverEsquerda(String, margin, BASE, Fonte);
 
         BASE -= margin;
-        sprintf(String, "Dinossauros vivos: %d de %d dinossauros.", (POPULACAO_TAMANHO - DinossaurosMortos), POPULACAO_TAMANHO);
+        sprintf(String, "Dinossauros vivos: %d de %d.", (POPULACAO_TAMANHO - DinossaurosMortos), POPULACAO_TAMANHO);
         EscreverEsquerda(String, margin, BASE, Fonte);
 
         BASE -= margin;
@@ -502,6 +504,36 @@ void Desenhar()
 
         sprintf(String, "%.0f pixels", DistanciaAtual);
         EscreverEsquerda(String, 150, BASE, Fonte);
+
+        int xTopFive = 685;
+        int yTopFive = 500;
+        int xMargin = 10;
+        int yMargin = 25;
+        vector<Dinossauro>::iterator it = topFive.begin();
+        Dinossauro dino = *it;
+        int len = dino.TamanhoDNA;
+        int i = 0, j;
+        char msg[] = "%d: %.2f\n";
+        double gene;
+        SDL_Color cor;
+        for (; it != topFive.end(); ++it)
+        {
+            dino = *it;
+            sprintf(String, msg, i + 1, dino.Fitness);
+            EscreverEsquerda(String, xTopFive, yTopFive, Fonte);
+            for (j = 0; j < len; ++j)
+            {
+                gene = dino.DNA[j];
+                if (gene > 0)
+                    cor = (PIG_Cor){255, 0, 0, (gene) / 4};
+                else
+                    cor = (PIG_Cor){0, 0, 255, (gene) * (-1) / 4};
+
+                DesenhaCirculo(xTopFive + 170 + xMargin * j, ALT_TELA - yTopFive - 3 * yMargin / 8, 10, cor);
+            }
+            ++i;
+            yTopFive -= yMargin;
+        }
 
         EncerrarDesenho();
     }

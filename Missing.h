@@ -99,4 +99,8 @@ double DistanciaEntrePontos(double x1, double y1, double x2, double y2)
     return distanciaEntrePontos(x1, y1, x2, y2);
 }
 
+void DesenhaCirculo(int centreX, int centreY, int radius, SDL_Color color)
+{
+    PIG_desenhaCirculo(centreX, centreY, radius, color);
+}
 #endif // MISSING_H_INCLUDED
