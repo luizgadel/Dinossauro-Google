@@ -25,7 +25,7 @@ ifeq ($(OS),Windows_NT)
 	INCLUDE_PATHS += -IC:\CPP_Projects\pig-brccabral\include\SDL
 	INCLUDE_PATHS += -IC:\CPP_Projects\pig-brccabral\include\SDL_image
 	
-	LIBRARY_PATHS := -LD:\CPP_Projects\pig-brccabral\lib_x64
+	LIBRARY_PATHS := -LC:\CPP_Projects\pig-brccabral\lib_x64
 	
 	COMPILER_FLAGS := -g -std=c++14 -w
 	
