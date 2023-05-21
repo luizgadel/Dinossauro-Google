@@ -267,7 +267,8 @@ void ConfiguracoesIniciais()
     InicializarGrafico();
 
     TimerGeral = CriarTimer();
-    Fonte = CriarFonteNormal("fontes/arial.ttf", 15, PRETO, 0, PRETO);
+    // Fonte = CriarFonteNormal("fontes/arial.ttf", 15, PRETO, 0, PRETO);
+    Fonte = CriarFonteNormal("fontes/noto.ttf", 15, PRETO, 0, PRETO);
     FonteVermelha = CriarFonteNormal("fontes/arial.ttf", 15, VERMELHO, 0, PRETO);
     FonteAzul = CriarFonteNormal("fontes/arial.ttf", 15, AZUL, 0, PRETO);
     DistanciaRecorde = 0;

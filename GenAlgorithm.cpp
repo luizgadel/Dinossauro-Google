@@ -24,7 +24,7 @@ private:
         vector<int> parentPositions = {};
         for (int i = 0; i < numParents; i++)
         {
-            int randValue = rand() % limite; 
+            int randValue = rand() % limite;
             vector<int>::iterator rsi = rouletteWheel.begin();
 
             while (randValue > *rsi)
@@ -67,7 +67,8 @@ private:
     {
         int bestDinoPos = findBestDinoPos(d, DNAs);
 
-        if (Geracao > 0) {
+        if (Geracao > 0)
+        {
             if (d[bestDinoPos].Fitness == lastGen[lastGenBestDinoPos].Fitness)
             {
                 bestFitnessDidntChange += 1;
@@ -82,7 +83,6 @@ private:
         }
 
         lastGenBestDinoPos = bestDinoPos;
-
     }
 
     void updateLastGenVector(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
@@ -135,18 +135,18 @@ private:
         cout << endl
              << "Substituindo pelo melhor da última geração..." << endl;
         vector<double> lastGenBestDNA = pointerArrayToVector(lastGen[lastGenBestDinoPos].DNA, dnaSize);
-        printDinoData(lastGenBestDinoPos, lastGen[lastGenBestDinoPos], lastGenBestDNA);
+        // printDinoData(lastGenBestDinoPos, lastGen[lastGenBestDinoPos], lastGenBestDNA);
 
         d[worstDinoPos] = lastGen[lastGenBestDinoPos];
         DNAs[worstDinoPos] = lastGenBestDNA;
 
-        printDinoData(worstDinoPos, d[worstDinoPos], DNAs[worstDinoPos]);
+        // printDinoData(worstDinoPos, d[worstDinoPos], DNAs[worstDinoPos]);
 
         return worstDinoPos;
     }
 
 public:
-    GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03)
+    GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.05)
     {
         crossoverProbability_ = crossoverProbability;
         mutationProbability_ = mutationProbability;
@@ -156,7 +156,6 @@ public:
     {
         cout << "--- Evolução ---" << endl;
         cout << "Geração " << Geracao << endl;
-        printGenerationData(d, DNAs);
 
         int dSize = DNAs.size();
         int dnaSize = (*DNAs.begin()).size();

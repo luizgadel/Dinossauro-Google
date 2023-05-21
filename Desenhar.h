@@ -513,7 +513,7 @@ void Desenhar(vector<Dinossauro> topFive)
         Dinossauro dino = *it;
         int len = dino.TamanhoDNA;
         int i = 0, j;
-        char msg[] = "%d: %.2f\n";
+        char msg[] = "❤️: %.2f\n";
         double gene;
         SDL_Color cor;
         for (; it != topFive.end(); ++it)
