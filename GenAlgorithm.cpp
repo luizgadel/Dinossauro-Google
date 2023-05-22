@@ -244,4 +244,14 @@ public:
 
         Geracao++;
     }
+
+    Dinossauro getLastGenBestDino() {
+        if (lastGen.size() > 0) {
+            return lastGen.at(lastGenBestDinoPos);
+        }
+        else {
+            Dinossauro d;
+            return d;
+        }
+    }
 };

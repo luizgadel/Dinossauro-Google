@@ -449,7 +449,80 @@ void DesenharDinossauros()
     }
 }
 
-void Desenhar(vector<Dinossauro> topFive)
+void DrawGenInfo(char *String, int margin, int BASE)
+{
+
+    sprintf(String, "Geracao: %d", Geracao);
+    EscreverEsquerda(String, margin, BASE, Fonte);
+
+    BASE -= margin;
+    sprintf(String, "Clock: %f segundo", Periodo);
+    EscreverEsquerda(String, margin, BASE, Fonte);
+
+    BASE -= margin;
+    sprintf(String, "Dinossauros vivos: %d de %d.", (POPULACAO_TAMANHO - DinossaurosMortos), POPULACAO_TAMANHO);
+    EscreverEsquerda(String, margin, BASE, Fonte);
+
+    BASE -= margin;
+    sprintf(String, "Velocidade: %.2f (%.0f pixels por segundo)", fabs(VELOCIDADE), fabs(VELOCIDADE) / Periodo);
+    EscreverEsquerda(String, margin, BASE, Fonte);
+
+    BASE -= margin;
+    sprintf(String, "Distancia Recorde:");
+    EscreverEsquerda(String, margin, BASE, Fonte);
+
+    sprintf(String, "%.0f pixels", DistanciaRecorde);
+    EscreverEsquerda(String, 150, BASE, FonteAzul);
+
+    BASE -= margin;
+    sprintf(String, "Distancia Atual:");
+    EscreverEsquerda(String, margin, BASE, Fonte);
+
+    sprintf(String, "%.0f pixels", DistanciaAtual);
+    EscreverEsquerda(String, 150, BASE, Fonte);
+}
+
+void DrawDino(Dinossauro dino, int dinoId, int xTopFive, int xMargin, int yTopFive, int yMargin)
+{
+    char String[1000];
+    char msg[] = "%d: %.2f\n";
+    double gene;
+    SDL_Color cor;
+    int len = dino.TamanhoDNA;
+    int xStart = xTopFive + 120;
+    int yStart = ALT_TELA - yTopFive;
+
+    for (int j = 0; j < len; ++j)
+    {
+        sprintf(String, msg, dinoId, dino.Fitness);
+        EscreverEsquerda(String, xTopFive, yTopFive, Fonte);
+        gene = dino.DNA[j];
+        if (gene > 0)
+            cor = (PIG_Cor){255, 0, 0, (gene) / 4};
+        else
+            cor = (PIG_Cor){0, 0, 255, (gene) * (-1) / 4};
+
+        DesenhaCirculo(xStart + xMargin * j, yStart - 3 * yMargin / 8, 10, cor);
+    }
+}
+
+void DrawTopFive(vector<Dinossauro> topFive, char *String, int xTopFive, int yTopFive, int xMargin, int yMargin)
+{
+    vector<Dinossauro>::iterator it = topFive.begin();
+    Dinossauro dino = *it;
+    int i = 0;
+    for (; it != topFive.end(); ++it)
+    {
+        dino = *it;
+
+        DrawDino(dino, i + 1, xTopFive, xMargin, yTopFive, yMargin);
+
+        ++i;
+        yTopFive -= yMargin;
+    }
+}
+
+void Desenhar(vector<Dinossauro> topFive, Dinossauro lastGenBestDino)
 {
     int margin = 20;
     int altGrafico = 350;
@@ -476,64 +549,21 @@ void Desenhar(vector<Dinossauro> topFive)
 
         char String[1000];
 
-        sprintf(String, "Geracao: %d", Geracao);
-        EscreverEsquerda(String, margin, BASE, Fonte);
-
-        BASE -= margin;
-        sprintf(String, "Clock: %f segundo", Periodo);
-        EscreverEsquerda(String, margin, BASE, Fonte);
-
-        BASE -= margin;
-        sprintf(String, "Dinossauros vivos: %d de %d.", (POPULACAO_TAMANHO - DinossaurosMortos), POPULACAO_TAMANHO);
-        EscreverEsquerda(String, margin, BASE, Fonte);
-
-        BASE -= margin;
-        sprintf(String, "Velocidade: %.2f (%.0f pixels por segundo)", fabs(VELOCIDADE), fabs(VELOCIDADE) / Periodo);
-        EscreverEsquerda(String, margin, BASE, Fonte);
-
-        BASE -= margin;
-        sprintf(String, "Distancia Recorde:");
-        EscreverEsquerda(String, margin, BASE, Fonte);
-
-        sprintf(String, "%.0f pixels", DistanciaRecorde);
-        EscreverEsquerda(String, 150, BASE, FonteAzul);
-
-        BASE -= margin;
-        sprintf(String, "Distancia Atual:");
-        EscreverEsquerda(String, margin, BASE, Fonte);
-
-        sprintf(String, "%.0f pixels", DistanciaAtual);
-        EscreverEsquerda(String, 150, BASE, Fonte);
+        DrawGenInfo(String, margin, BASE);
 
         int xTopFive = 685;
         int yTopFive = 500;
         int xMargin = 10;
         int yMargin = 25;
-        vector<Dinossauro>::iterator it = topFive.begin();
-        Dinossauro dino = *it;
-        int len = dino.TamanhoDNA;
-        int i = 0, j;
-        char msg[] = "%d: %.2f\n";
-        double gene;
-        SDL_Color cor;
-        for (; it != topFive.end(); ++it)
+        
+        if (Geracao > 0)
         {
-            dino = *it;
-            sprintf(String, msg, i + 1, dino.Fitness);
-            EscreverEsquerda(String, xTopFive, yTopFive, Fonte);
-            for (j = 0; j < len; ++j)
-            {
-                gene = dino.DNA[j];
-                if (gene > 0)
-                    cor = (PIG_Cor){255, 0, 0, (gene) / 4};
-                else
-                    cor = (PIG_Cor){0, 0, 255, (gene) * (-1) / 4};
-
-                DesenhaCirculo(xTopFive + 170 + xMargin * j, ALT_TELA - yTopFive - 3 * yMargin / 8, 10, cor);
-            }
-            ++i;
-            yTopFive -= yMargin;
+            DrawDino(lastGenBestDino, 0, xTopFive, xMargin, yTopFive, yMargin);
         }
+        
+        yTopFive -= yMargin * 1.2;
+
+        DrawTopFive(topFive, String, xTopFive, yTopFive, xMargin, yMargin);
 
         EncerrarDesenho();
     }

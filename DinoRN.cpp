@@ -37,6 +37,7 @@
 #include "utils.cpp"
 
 ///////////////////////////////////////////////////
+Dinossauro lastGenBestDino;
 
 void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenhar na tela
 {
@@ -44,7 +45,7 @@ void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenha
     {
         vector<Dinossauro> d = arrayToVector(Dinossauros);
         vector<Dinossauro> topFive = getTopFive(d);
-        Desenhar(topFive);
+        Desenhar(topFive, lastGenBestDino);
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 }
@@ -311,6 +312,7 @@ void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
             vector<vector<double>> DNAs = matrixToVector(DNADaVez, tamDNA);
 
             Strategy->Evolve(d, DNAs);
+            lastGenBestDino = Strategy->getLastGenBestDino();
         }
         InicializarNovaPartida();
     }
@@ -332,6 +334,11 @@ public:
 
     DinoRN(unique_ptr<EvolutionaryStrategy> &&strategy = make_unique<RandMutations>()) : strategy_(move(strategy))
     {
+    }
+
+    Dinossauro getLastGenBestDino()
+    {
+        return strategy_->getLastGenBestDino();
     }
 
     void startGame()
