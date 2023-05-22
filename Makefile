@@ -33,9 +33,9 @@ ifeq ($(OS),Windows_NT)
 
 	OBJ_NAME = main.exe
 else
-	INCLUDE_PATHS := -I$(HOME)/CPP_Projects/PIG-brccabral/include
-	INCLUDE_PATHS += -I$(HOME)/CPP_Projects/PIG-brccabral/include/SDL
-	INCLUDE_PATHS += -I$(HOME)/CPP_Projects/PIG-brccabral/include/SDL_image
+	INCLUDE_PATHS := -I$(HOME)/Documentos/repos/PIG/include
+	INCLUDE_PATHS += -I$(HOME)/Documentos/repos/PIG/include/SDL
+	INCLUDE_PATHS += -I$(HOME)/Documentos/repos/PIG/include/SDL_image
 	INCLUDE_PATHS += -I/usr/include/SDL2
 	
 	COMPILER_FLAGS := -g -std=c++14 -w
