@@ -145,6 +145,16 @@ private:
         return worstDinoPos;
     }
 
+    void updateDNADaVezByDinoId(vector<double> newDNA, int dinoId)
+    {
+        int dnaSize = newDNA.size();
+
+        for (int j = 0; j < dnaSize; j++)
+        {
+            DNADaVez[dinoId][j] = newDNA.at(j);
+        }
+    }
+
 public:
     GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03)
     {
@@ -162,23 +172,18 @@ public:
         int dSize = DNAs.size();
         int dnaSize = (*DNAs.begin()).size();
 
-        if (Geracao > 0)
-        {
-            cout << "Aplicando elitismo..." << endl;
-            applyElitism(d, DNAs, dnaSize);
-        }
-        else
-        {
-            cout << "Não é necessário aplicar elitismo." << endl;
-        }
-
         updateLastGenVector(d, DNAs);
 
         cout << endl
              << "Criando novos genes..." << endl;
 
         vector<vector<double>> newGenerationDNA;
-        for (int i = 0; i < dSize; i++)
+
+        /* Elitismo */
+        vector<double> lastGenBestDNA = pointerArrayToVector(lastGen[lastGenBestDinoPos].DNA, dnaSize);
+        updateDNADaVezByDinoId(lastGenBestDNA, 0);
+
+        for (int i = 1; i < dSize; i++)
         {
             vector<int> parentPositions = getRandomParents(d);
 
@@ -235,10 +240,7 @@ public:
 
             newGenerationDNA.push_back(childDNA);
 
-            for (int j = 0; j < dnaSize; j++)
-            {
-                DNADaVez[i][j] = childDNA.at(j);
-            }
+            updateDNADaVezByDinoId(childDNA, i);
 
             Dinossauros[i].ResetarFitness = 1;
         }
