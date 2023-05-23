@@ -24,7 +24,7 @@ private:
         vector<int> parentPositions = {};
         for (int i = 0; i < numParents; i++)
         {
-            int randValue = rand() % limite; 
+            int randValue = rand() % limite;
             vector<int>::iterator rsi = rouletteWheel.begin();
 
             while (randValue > *rsi)
@@ -67,7 +67,8 @@ private:
     {
         int bestDinoPos = findBestDinoPos(d, DNAs);
 
-        if (Geracao > 0) {
+        if (Geracao > 0)
+        {
             if (d[bestDinoPos].Fitness == lastGen[lastGenBestDinoPos].Fitness)
             {
                 bestFitnessDidntChange += 1;
@@ -82,7 +83,6 @@ private:
         }
 
         lastGenBestDinoPos = bestDinoPos;
-
     }
 
     void updateLastGenVector(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
@@ -148,6 +148,7 @@ private:
 public:
     GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03)
     {
+        strcpy(_name, "Algoritmo Genetico");
         crossoverProbability_ = crossoverProbability;
         mutationProbability_ = mutationProbability;
     }

@@ -449,7 +449,7 @@ void DesenharDinossauros()
     }
 }
 
-void DrawGenInfo(char *String, int margin, int BASE)
+void DrawGenInfo(char *String, int margin, int BASE, char evoMethodName[100])
 {
 
     sprintf(String, "Geracao: %d", Geracao);
@@ -480,6 +480,13 @@ void DrawGenInfo(char *String, int margin, int BASE)
 
     sprintf(String, "%.0f pixels", DistanciaAtual);
     EscreverEsquerda(String, 150, BASE, Fonte);
+
+    BASE -= margin;
+    sprintf(String, "Metodo de evolucao:");
+    EscreverEsquerda(String, margin, BASE, Fonte);
+
+    sprintf(String, "%s.", evoMethodName);
+    EscreverEsquerda(String, 170, BASE, Fonte);
 }
 
 void DrawDino(Dinossauro dino, int dinoId, int xTopFive, int xMargin, int yTopFive, int yMargin)
@@ -522,7 +529,7 @@ void DrawTopFive(vector<Dinossauro> topFive, char *String, int xTopFive, int yTo
     }
 }
 
-void Desenhar(vector<Dinossauro> topFive, Dinossauro lastGenBestDino)
+void Desenhar(vector<Dinossauro> topFive, Dinossauro lastGenBestDino, char evoMethodName[100])
 {
     int margin = 20;
     int altGrafico = 350;
@@ -549,7 +556,7 @@ void Desenhar(vector<Dinossauro> topFive, Dinossauro lastGenBestDino)
 
         char String[1000];
 
-        DrawGenInfo(String, margin, BASE);
+        DrawGenInfo(String, margin, BASE, evoMethodName);
 
         int xTopFive = 685;
         int yTopFive = 500;

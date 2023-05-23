@@ -5,6 +5,11 @@ using namespace std;
 class RandMutations : public EvolutionaryStrategy
 {
 public:
+    RandMutations()
+    {
+        strcpy(_name, "Random Mutations");
+    }
+
     void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
     {
         static double RangeRandom = Dinossauros[0].TamanhoDNA;

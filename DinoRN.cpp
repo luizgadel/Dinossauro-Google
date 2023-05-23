@@ -39,13 +39,15 @@
 ///////////////////////////////////////////////////
 Dinossauro lastGenBestDino;
 
+char evoMethodName[100];
+
 void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenhar na tela
 {
     while (PIG_jogoRodando() == 1)
     {
         vector<Dinossauro> d = arrayToVector(Dinossauros);
         vector<Dinossauro> topFive = getTopFive(d);
-        Desenhar(topFive, lastGenBestDino);
+        Desenhar(topFive, lastGenBestDino, evoMethodName);
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 }
@@ -334,11 +336,7 @@ public:
 
     DinoRN(unique_ptr<EvolutionaryStrategy> &&strategy = make_unique<RandMutations>()) : strategy_(move(strategy))
     {
-    }
-
-    Dinossauro getLastGenBestDino()
-    {
-        return strategy_->getLastGenBestDino();
+        strcpy(evoMethodName, strategy_->getName());
     }
 
     void startGame()
