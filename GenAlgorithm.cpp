@@ -9,22 +9,28 @@ private:
     double crossoverProbability_;
     double mutationProbability_;
     vector<int> rouletteWheel = {};
+    int lastRouletteGenIndex = -1;
     vector<Dinossauro> lastGen = {};
-    int lastGenBestDinoPos = 0;
+    int lastGenBestDinoPos = -1;
     int bestFitnessDidntChange = 0;
     int maxPatiente = 50;
 
     vector<int> getRandomParents(vector<Dinossauro> d, int numParents = 2)
     {
-        if (rouletteWheel.size() == 0)
+        int limite;
+        bool isRouletteOutdated = (lastRouletteGenIndex != Geracao);
+        if (isRouletteOutdated)
+        {
             rouletteWheel = getRouletteWheel(d);
-
-        int limite = *max_element(rouletteWheel.begin(), rouletteWheel.end());
+            limite = *max_element(rouletteWheel.begin(), rouletteWheel.end());
+            cout << "limite: " << limite << endl;
+            lastRouletteGenIndex = Geracao;
+        }
 
         vector<int> parentPositions = {};
         for (int i = 0; i < numParents; i++)
         {
-            int randValue = rand() % limite;
+            int randValue = (rand() % limite) + 1;
             vector<int>::iterator rsi = rouletteWheel.begin();
 
             while (randValue > *rsi)
@@ -167,7 +173,6 @@ public:
     {
         cout << "--- Evolução ---" << endl;
         cout << "Geração " << Geracao << endl;
-        printGenerationData(d, DNAs);
 
         int dSize = DNAs.size();
         int dnaSize = (*DNAs.begin()).size();
@@ -248,11 +253,14 @@ public:
         Geracao++;
     }
 
-    Dinossauro getLastGenBestDino() {
-        if (lastGen.size() > 0) {
+    Dinossauro getLastGenBestDino()
+    {
+        if (lastGen.size() > 0)
+        {
             return lastGen.at(lastGenBestDinoPos);
         }
-        else {
+        else
+        {
             Dinossauro d;
             return d;
         }
