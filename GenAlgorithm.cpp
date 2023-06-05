@@ -9,6 +9,7 @@ private:
     double crossoverProbability_;
     double mutationProbability_;
     vector<int> rouletteWheel = {};
+    int limiteRouletteWheel = 0;
     int lastRouletteGenIndex = -1;
     vector<Dinossauro> lastGen = {};
     int lastGenBestDinoPos = -1;
@@ -17,20 +18,18 @@ private:
 
     vector<int> getRandomParents(vector<Dinossauro> d, int numParents = 2)
     {
-        int limite;
         bool isRouletteOutdated = (lastRouletteGenIndex != Geracao);
         if (isRouletteOutdated)
         {
             rouletteWheel = getRouletteWheel(d);
-            limite = *max_element(rouletteWheel.begin(), rouletteWheel.end());
-            cout << "limite: " << limite << endl;
+            limiteRouletteWheel = *max_element(rouletteWheel.begin(), rouletteWheel.end());
             lastRouletteGenIndex = Geracao;
         }
 
         vector<int> parentPositions = {};
         for (int i = 0; i < numParents; i++)
         {
-            int randValue = (rand() % limite) + 1;
+            int randValue = (rand() % limiteRouletteWheel) + 1;
             vector<int>::iterator rsi = rouletteWheel.begin();
 
             while (randValue > *rsi)
