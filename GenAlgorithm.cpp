@@ -15,6 +15,8 @@ private:
     int lastGenBestDinoPos = -1;
     int bestFitnessDidntChange = 0;
     int maxPatiente = 50;
+    int topNElitismParam_;
+    TopNElitism topFiveElitism_;
 
     vector<int> getRandomParents(vector<Dinossauro> d, int numParents = 2)
     {
@@ -150,22 +152,14 @@ private:
         return worstDinoPos;
     }
 
-    void updateDNADaVezByDinoId(vector<double> newDNA, int dinoId)
-    {
-        int dnaSize = newDNA.size();
-
-        for (int j = 0; j < dnaSize; j++)
-        {
-            DNADaVez[dinoId][j] = newDNA.at(j);
-        }
-    }
-
 public:
-    GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03)
+    GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03, double elitismPercent = 0.05)
     {
         strcpy(_name, "Algoritmo Genetico");
         crossoverProbability_ = crossoverProbability;
         mutationProbability_ = mutationProbability;
+        topNElitismParam_ = round(POPULACAO_TAMANHO * elitismPercent);
+        topFiveElitism_ = TopNElitism(topNElitismParam_);
     }
 
     void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
@@ -181,13 +175,10 @@ public:
         cout << endl
              << "Criando novos genes..." << endl;
 
-        vector<vector<double>> newGenerationDNA;
-
         /* Elitismo */
-        vector<double> lastGenBestDNA = pointerArrayToVector(lastGen[lastGenBestDinoPos].DNA, dnaSize);
-        updateDNADaVezByDinoId(lastGenBestDNA, 0);
+        topFiveElitism_.Apply(d);
 
-        for (int i = 1; i < dSize; i++)
+        for (int i = topNElitismParam_; i < dSize; i++)
         {
             vector<int> parentPositions = getRandomParents(d);
 
@@ -241,8 +232,6 @@ public:
                     childDNA.at(j) = getRandomValue();
                 }
             }
-
-            newGenerationDNA.push_back(childDNA);
 
             updateDNADaVezByDinoId(childDNA, i);
 

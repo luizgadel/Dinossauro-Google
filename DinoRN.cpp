@@ -35,6 +35,7 @@
 #include "EvolutionaryStrategy.cpp"
 #include "RandMutations.cpp"
 #include "utils.cpp"
+#include "TopNElitism.cpp"
 
 ///////////////////////////////////////////////////
 Dinossauro lastGenBestDino;
@@ -46,8 +47,10 @@ void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenha
     while (PIG_jogoRodando() == 1)
     {
         vector<Dinossauro> d = arrayToVector(Dinossauros);
-        vector<Dinossauro> topFive = getTopFive(d);
-        Desenhar(topFive, lastGenBestDino, evoMethodName);
+        vector<Dinossauro> topN;
+        vector<int> topNPositions;
+        tie(topN, topNPositions) = getTopN(d, 10);
+        Desenhar(topN, topNPositions, lastGenBestDino, evoMethodName);
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
     }
 }

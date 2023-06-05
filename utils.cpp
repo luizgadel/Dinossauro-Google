@@ -175,25 +175,62 @@ vector<T> sliceV(vector<T> v, int start, int end)
     return slicedVector;
 }
 
-vector<Dinossauro> getTopFive(vector<Dinossauro> d)
+template <typename T>
+bool vectorContains(vector<T> v, T element)
 {
-    vector<Dinossauro>::iterator di = d.begin();
+    return count(v.begin(), v.end(), element);
+}
+
+template <typename T>
+bool vectorNotContains(vector<T> v, T element)
+{
+    return !vectorContains(v, element);
+}
+
+tuple<vector<Dinossauro>, vector<int>> getTopN(vector<Dinossauro> d, int n)
+{
     int numberOfDinos = d.size();
+    int nthBestRealPos;
+    double nthBestFitness;
     Dinossauro dinoAux;
 
-    for (int i = 0; i < numberOfDinos; i++)
+    vector<int> topNPositions;
+    vector<Dinossauro> topN;
+
+    for (int i = 0; i < n; i++)
     {
+        int k = 0;
+        while(vectorContains(topNPositions, k))
+            k++;
+        nthBestRealPos = k;
+        double nthBestFitness = d.at(k).Fitness;
         for (int j = 0; j < numberOfDinos - 1; j++)
         {
-            if (d.at(j).Fitness < d.at(j + 1).Fitness)
+            double possibleNthBestFitness = d.at(j).Fitness;
+            if (nthBestFitness < possibleNthBestFitness && vectorNotContains(topNPositions, j))
             {
-                dinoAux = d.at(j);
-                d.at(j) = d.at(j + 1);
-                d.at(j + 1) = dinoAux;
+                nthBestRealPos = j;
+                nthBestFitness = possibleNthBestFitness;
             }
         }
-    }
 
-    vector<Dinossauro> topFive = sliceV(d, 0, 5);
-    return topFive;
+        topNPositions.push_back(nthBestRealPos);
+        topN.push_back(d.at(nthBestRealPos));
+    }
+    return make_tuple(topN, topNPositions);
+}
+
+tuple<vector<Dinossauro>, vector<int>> getTopFive(vector<Dinossauro> d)
+{
+    return getTopN(d, 5);
+}
+
+void updateDNADaVezByDinoId(vector<double> newDNA, int dinoId)
+{
+    int dnaSize = newDNA.size();
+
+    for (int j = 0; j < dnaSize; j++)
+    {
+        DNADaVez[dinoId][j] = newDNA.at(j);
+    }
 }

@@ -489,10 +489,10 @@ void DrawGenInfo(char *String, int margin, int BASE, char evoMethodName[100])
     EscreverEsquerda(String, 170, BASE, Fonte);
 }
 
-void DrawDino(Dinossauro dino, int dinoId, int xTopFive, int xMargin, int yTopFive, int yMargin)
+void DrawDino(Dinossauro dino, int topFivePos, int dinoId, int xTopFive, int xMargin, int yTopFive, int yMargin)
 {
     char String[1000];
-    char msg[] = "%d: %.2f\n";
+    char msg[] = "%d (%d): %.2f\n";
     double gene;
     SDL_Color cor;
     int len = dino.TamanhoDNA;
@@ -501,7 +501,7 @@ void DrawDino(Dinossauro dino, int dinoId, int xTopFive, int xMargin, int yTopFi
 
     for (int j = 0; j < len; ++j)
     {
-        sprintf(String, msg, dinoId, dino.Fitness);
+        sprintf(String, msg, topFivePos, dinoId, dino.Fitness);
         EscreverEsquerda(String, xTopFive, yTopFive, Fonte);
         gene = dino.DNA[j];
         if (gene > 0)
@@ -513,23 +513,29 @@ void DrawDino(Dinossauro dino, int dinoId, int xTopFive, int xMargin, int yTopFi
     }
 }
 
-void DrawTopFive(vector<Dinossauro> topFive, char *String, int xTopFive, int yTopFive, int xMargin, int yMargin)
+void DrawTopN(vector<Dinossauro> topN, vector<int> topNPositions, char *String, int xTopFive, int yTopFive, int xMargin, int yMargin)
 {
-    vector<Dinossauro>::iterator it = topFive.begin();
-    Dinossauro dino = *it;
+    vector<Dinossauro>::iterator dinoIt = topN.begin();
+    Dinossauro dino = *dinoIt;
+    
+    vector<int>::iterator dinoPosIt = topNPositions.begin();
+    int dinoPos = *dinoPosIt;
+    
     int i = 0;
-    for (; it != topFive.end(); ++it)
+    for (; dinoIt != topN.end(); ++dinoIt)
     {
-        dino = *it;
+        dino = *dinoIt;
+        dinoPos = *dinoPosIt;
 
-        DrawDino(dino, i + 1, xTopFive, xMargin, yTopFive, yMargin);
+        DrawDino(dino, i + 1, dinoPos, xTopFive, xMargin, yTopFive, yMargin);
 
         ++i;
         yTopFive -= yMargin;
+        ++dinoPosIt;
     }
 }
 
-void Desenhar(vector<Dinossauro> topFive, Dinossauro lastGenBestDino, char evoMethodName[100])
+void Desenhar(vector<Dinossauro> topN, vector<int> topNPositions, Dinossauro lastGenBestDino, char evoMethodName[100])
 {
     int margin = 20;
     int altGrafico = 350;
@@ -565,12 +571,12 @@ void Desenhar(vector<Dinossauro> topFive, Dinossauro lastGenBestDino, char evoMe
         
         if (Geracao > 0)
         {
-            DrawDino(lastGenBestDino, 0, xTopFive, xMargin, yTopFive, yMargin);
+            DrawDino(lastGenBestDino, 0, 0, xTopFive, xMargin, yTopFive, yMargin);
         }
         
         yTopFive -= yMargin * 1.2;
 
-        DrawTopFive(topFive, String, xTopFive, yTopFive, xMargin, yMargin);
+        DrawTopN(topN, topNPositions, String, xTopFive, yTopFive, xMargin, yMargin);
 
         EncerrarDesenho();
     }
