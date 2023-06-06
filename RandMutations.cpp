@@ -7,7 +7,7 @@ class RandMutations : public EvolutionaryStrategy
 public:
     RandMutations()
     {
-        strcpy(_name, "Random Mutations");
+        strcpy(_name, "RM");
     }
 
     void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)

@@ -155,7 +155,8 @@ private:
 public:
     GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03, double elitismPercent = 0.05)
     {
-        strcpy(_name, "Algoritmo Genetico");
+        strcpy(_name, "AG");
+        sprintf(_args, "\"%.2f,%.2f,%.2f\"", crossoverProbability, mutationProbability, elitismPercent);
         crossoverProbability_ = crossoverProbability;
         mutationProbability_ = mutationProbability;
         topNElitismParam_ = round(POPULACAO_TAMANHO * elitismPercent);

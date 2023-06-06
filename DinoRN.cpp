@@ -36,19 +36,42 @@
 #include "RandMutations.cpp"
 #include "utils.cpp"
 #include "TopNElitism.cpp"
+#include<fstream>
+#include<iostream>
 
 ///////////////////////////////////////////////////
 Dinossauro lastGenBestDino;
 
 char evoMethodName[100];
+char evoMethodArgs[100];
+int lastGenSavedToCSV = 0;
+vector<Dinossauro> topN;
+vector<int> topNPositions;
+
+void WriteBestFinessToCSV(vector<Dinossauro> topN)
+{
+    ofstream scoresFile;
+    char String[1000];
+    char msg[] = "%s, %d, %.0f, %.0f, %d, %s,\n";
+
+    vector<Dinossauro>::iterator dinoIt = topN.begin();
+    Dinossauro bestDino = *dinoIt;
+    double bestFitness = bestDino.Fitness;
+
+    scoresFile.open("scores.csv", ios::app);
+
+    sprintf(String, msg, evoMethodName, Geracao, DistanciaRecorde, bestFitness, POPULACAO_TAMANHO, evoMethodArgs);
+    scoresFile << String;
+    scoresFile.close();
+
+    lastGenSavedToCSV = Geracao;
+}
 
 void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenhar na tela
 {
     while (PIG_jogoRodando() == 1)
     {
         vector<Dinossauro> d = arrayToVector(Dinossauros);
-        vector<Dinossauro> topN;
-        vector<int> topNPositions;
         tie(topN, topNPositions) = getTopN(d, 10);
         Desenhar(topN, topNPositions, lastGenBestDino, evoMethodName);
         std::this_thread::sleep_for(std::chrono::milliseconds(5));
@@ -243,6 +266,8 @@ void InicializarNovaPartida()
 
 void EncerrarPartida()
 {
+    WriteBestFinessToCSV(topN);
+
     if (DistanciaAtual > DistanciaRecorde)
     {
         DistanciaRecorde = DistanciaAtual;
@@ -340,6 +365,7 @@ public:
     DinoRN(unique_ptr<EvolutionaryStrategy> &&strategy = make_unique<RandMutations>()) : strategy_(move(strategy))
     {
         strcpy(evoMethodName, strategy_->getName());
+        strcpy(evoMethodArgs, strategy_->getArgs());
     }
 
     void startGame()
