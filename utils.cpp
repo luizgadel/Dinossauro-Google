@@ -190,6 +190,9 @@ bool vectorNotContains(vector<T> v, T element)
 tuple<vector<Dinossauro>, vector<int>> getTopN(vector<Dinossauro> d, int n)
 {
     int numberOfDinos = d.size();
+    if (n > numberOfDinos)
+        n = numberOfDinos;
+
     int nthBestRealPos;
     double nthBestFitness;
     Dinossauro dinoAux;

@@ -127,7 +127,7 @@ public:
     GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03, double elitismPercent = 0.05)
     {
         strcpy(_name, "AG");
-        sprintf(_args, "\"%.2f,%.2f,%.2f\"", crossoverProbability, mutationProbability, elitismPercent);
+        sprintf(_args, "\"%0.f-%0.f-%0.f\"", crossoverProbability*100, mutationProbability*100, elitismPercent*100);
         onePointCrossover_ = OnePointCrossover(crossoverProbability);
         mutationProbability_ = mutationProbability;
         topNElitismParam_ = round(POPULACAO_TAMANHO * elitismPercent);

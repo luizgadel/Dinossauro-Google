@@ -58,9 +58,9 @@ void WriteBestFinessToCSV(vector<Dinossauro> topN)
 {
     ofstream scoresFile;
     char String[1000];
-    char msg[] = "%s, %d, %.0f, %.0f, %d, %s,\n";
+    char msg[] = "%s, %d, %.0f, %.0f, %d, %s\n";
     char filename[1000];
-    char filenameTemplate[] = "scores-%s.csv";
+    char filenameTemplate[] = "data/scores-%s.csv";
 
     vector<Dinossauro>::iterator dinoIt = topN.begin();
     Dinossauro bestDino = *dinoIt;
@@ -280,7 +280,7 @@ void EncerrarPartida()
         DistanciaRecorde = DistanciaAtual;
         SalvarRedeArquivo();
     }
-    
+
     WriteBestFinessToCSV(topN);
 }
 

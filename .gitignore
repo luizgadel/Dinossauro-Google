@@ -31,6 +31,12 @@
 *.out
 *.app
 
+# Data science
+*.ipynb
+*.csv
+.ipynb_checkpoints/
+
+
 .vscode/
 redes/
 main
