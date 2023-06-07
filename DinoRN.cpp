@@ -35,6 +35,7 @@
 #include "EvolutionaryStrategy.cpp"
 #include "RandMutations.cpp"
 #include "utils.cpp"
+#include "OnePointCrossover.cpp"
 #include "TopNElitism.cpp"
 #include <fstream>
 #include <iostream>
