@@ -106,28 +106,11 @@ private:
         return worstDinoPos;
     }
 
-    int applyElitism(vector<Dinossauro> &d, vector<vector<double>> &DNAs, int dnaSize)
-    {
-        int worstDinoPos = findWorstDinoPos(d, DNAs);
-
-        cout << endl
-             << "Substituindo pelo melhor da última geração..." << endl;
-        vector<double> lastGenBestDNA = pointerArrayToVector(lastGen[lastGenBestDinoPos].DNA, dnaSize);
-        printDinoData(lastGenBestDinoPos, lastGen[lastGenBestDinoPos], lastGenBestDNA);
-
-        d[worstDinoPos] = lastGen[lastGenBestDinoPos];
-        DNAs[worstDinoPos] = lastGenBestDNA;
-
-        printDinoData(worstDinoPos, d[worstDinoPos], DNAs[worstDinoPos]);
-
-        return worstDinoPos;
-    }
-
 public:
     GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03, double elitismPercent = 0.05)
     {
         strcpy(_name, "AG");
-        sprintf(_args, "\"%0.f-%0.f-%0.f\"", crossoverProbability*100, mutationProbability*100, elitismPercent*100);
+        sprintf(_args, "%0.f-%0.f-%0.f", crossoverProbability*100, mutationProbability*100, elitismPercent*100);
         onePointCrossover_ = OnePointCrossover(crossoverProbability);
         topNElitismParam_ = round(POPULACAO_TAMANHO * elitismPercent);
         topFiveElitism_ = TopNElitism(topNElitismParam_);

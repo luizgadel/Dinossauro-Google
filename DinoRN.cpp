@@ -63,7 +63,7 @@ void WriteBestFinessToCSV(vector<Dinossauro> topN)
 {
     ofstream scoresFile;
     char String[1000];
-    char msg[] = "%s, %d, %.0f, %.0f, %d, %s\n";
+    char msg[] = "%s, %d, %.0f, %.0f, %d,%s\n";
     char filename[1000];
     char filenameTemplate[] = "data/scores-%s.csv";
 
