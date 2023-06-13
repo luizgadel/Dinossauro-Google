@@ -37,6 +37,11 @@
 #include "utils.cpp"
 #include "OnePointCrossover.cpp"
 #include "TopNElitism.cpp"
+#include "MutationStrategy.cpp"
+#include "MutationBySubstitution.cpp"
+#include "MutationByMultiplication.cpp"
+#include "MutationBySum.cpp"
+#include "MutationByRM.cpp"
 #include <fstream>
 #include <iostream>
 

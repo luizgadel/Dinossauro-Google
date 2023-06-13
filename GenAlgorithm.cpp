@@ -6,7 +6,6 @@ using namespace std;
 class GenAlgorithm : public EvolutionaryStrategy
 {
 private:
-    double mutationProbability_;
     vector<Dinossauro> lastGen = {};
     int lastGenBestDinoPos = -1;
     int bestFitnessDidntChange = 0;
@@ -14,6 +13,7 @@ private:
     int topNElitismParam_;
     TopNElitism topFiveElitism_;
     OnePointCrossover onePointCrossover_;
+    unique_ptr<MutationStrategy> mutationStrategy_;
 
     int findBestDinoPos(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
     {
@@ -129,9 +129,9 @@ public:
         strcpy(_name, "AG");
         sprintf(_args, "\"%0.f-%0.f-%0.f\"", crossoverProbability*100, mutationProbability*100, elitismPercent*100);
         onePointCrossover_ = OnePointCrossover(crossoverProbability);
-        mutationProbability_ = mutationProbability;
         topNElitismParam_ = round(POPULACAO_TAMANHO * elitismPercent);
         topFiveElitism_ = TopNElitism(topNElitismParam_);
+        mutationStrategy_ = make_unique<MutationBySubstitution>(mutationProbability);
     }
 
     void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
@@ -158,16 +158,7 @@ public:
             vector<double> childDNA = onePointCrossover_.NewChildDNA(DNAs);
 
             /* Mutação */
-            double p;
-            for (int j = 0; j < dnaSize; j++)
-            {
-                p = randn();
-                if (p <= mutationProbability_)
-                {
-                    double antigoValor = childDNA.at(j);
-                    childDNA.at(j) = getRandomValue();
-                }
-            }
+            childDNA = mutationStrategy_->Apply(childDNA);
 
             updateDNADaVezByDinoId(childDNA, i);
 

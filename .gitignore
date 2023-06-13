@@ -30,6 +30,9 @@
 *.exe
 *.out
 *.app
+random_mutations*
+gen_algorithm*
+main_input*
 
 # Data science
 *.ipynb

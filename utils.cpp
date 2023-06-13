@@ -237,3 +237,8 @@ void updateDNADaVezByDinoId(vector<double> newDNA, int dinoId)
         DNADaVez[dinoId][j] = newDNA.at(j);
     }
 }
+
+double getRandomBetweenThousandMinusThousand()
+{
+    return ((randn() * 2) - 1) * 1000;
+}
