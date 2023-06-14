@@ -90,18 +90,24 @@ double randn()
 
 template <typename T>
 void printVector(vector<T> vect)
-{
-    typename vector<T>::iterator it;
+{   
     cout << "[";
-    for (it = vect.begin(); it != vect.begin() + 5; ++it)
+
+    typename vector<T>::iterator it = vect.begin();
+    if (vect.size() > 10) {
+        for (; it != vect.begin() + 5; ++it)
+        {
+            cout << " " << *it;
+        }
+        printf(" ...");
+        it = vect.end() - 5;
+    }
+
+    for (; it != vect.end(); ++it)
     {
         cout << " " << *it;
     }
-    printf(" ...");
-    for (it = vect.end() - 5; it != vect.end(); ++it)
-    {
-        cout << " " << *it;
-    }
+
     cout << "]" << endl;
 }
 
@@ -241,4 +247,39 @@ void updateDNADaVezByDinoId(vector<double> newDNA, int dinoId)
 double getRandomBetweenThousandMinusThousand()
 {
     return ((randn() * 2) - 1) * 1000;
+}
+
+vector<int> GetRandomVector(int n, int limit, int linCoef = 0)
+{
+    vector<int> randomVector = {};
+    for (int i = 0; i < n; ++i)
+    {
+        randomVector.push_back((rand() % limit) + linCoef);
+    }
+    return randomVector;
+}
+
+template <typename T>
+vector<T> ConcatVector(vector<T> firstV, vector<T> secondV, int startIndex, int endIndex)
+{
+    for (int i = startIndex; i < endIndex; ++i)
+    {
+        T elem = secondV.at(i);
+        firstV.push_back(elem);
+    }
+
+    return firstV;
+}
+
+template <typename T>
+vector<T> ConcatVector(vector<T> firstV, vector<T> secondV)
+{
+    typename vector<T>::iterator it = secondV.begin(), endIt = secondV.end();
+    for (; it != endIt; ++it)
+    {
+        T elem = *it;
+        firstV.push_back(elem);
+    }
+
+    return firstV;
 }

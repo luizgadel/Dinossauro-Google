@@ -32,10 +32,11 @@
 #include <chrono>
 #include <vector>
 
+#include "utils.cpp"
 #include "EvolutionaryStrategy.cpp"
 #include "RandMutations.cpp"
-#include "utils.cpp"
 #include "OnePointCrossover.cpp"
+#include "NPointCrossover.cpp"
 #include "TopNElitism.cpp"
 #include "MutationStrategy.cpp"
 #include "MutationBySubstitution.cpp"

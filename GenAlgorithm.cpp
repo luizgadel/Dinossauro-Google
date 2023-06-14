@@ -12,7 +12,7 @@ private:
     int maxPatiente = 50;
     int topNElitismParam_;
     TopNElitism topFiveElitism_;
-    OnePointCrossover onePointCrossover_;
+    unique_ptr<OnePointCrossover> crossoverStrategy_;
     unique_ptr<MutationStrategy> mutationStrategy_;
 
     int findBestDinoPos(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
@@ -111,7 +111,7 @@ public:
     {
         strcpy(_name, "AG");
         sprintf(_args, "%0.f-%0.f-%0.f", crossoverProbability*100, mutationProbability*100, elitismPercent*100);
-        onePointCrossover_ = OnePointCrossover(crossoverProbability);
+        crossoverStrategy_ = make_unique<OnePointCrossover>(crossoverProbability);
         topNElitismParam_ = round(POPULACAO_TAMANHO * elitismPercent);
         topFiveElitism_ = TopNElitism(topNElitismParam_);
         mutationStrategy_ = make_unique<MutationBySubstitution>(mutationProbability);
@@ -134,11 +134,11 @@ public:
         topFiveElitism_.Apply(d);
 
         /* Crossover */
-        onePointCrossover_.UpdateRouletteWheel(d);
+        crossoverStrategy_->UpdateRouletteWheel(d);
 
         for (int i = topNElitismParam_; i < dSize; i++)
         {
-            vector<double> childDNA = onePointCrossover_.NewChildDNA(DNAs);
+            vector<double> childDNA = crossoverStrategy_->NewChildDNA(DNAs);
 
             /* Mutação */
             childDNA = mutationStrategy_->Apply(childDNA);

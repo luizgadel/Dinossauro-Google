@@ -29,31 +29,20 @@ private:
         return parentPositions;
     }
 
-    vector<double> Crossover(vector<int> parentPositions, vector<vector<double>> DNAs)
+    virtual vector<double> Crossover(vector<int> parentPositions, vector<vector<double>> DNAs)
     {
-        
+
         vector<double> childDNA = {};
         
         int firstParentPos = parentPositions.at(0);
-        vector<double> firstParentDNA = DNAs.at(firstParentPos);
-        int dnaSize = firstParentDNA.size();
-
-        /* Crossover */
-        int crossoverPoint = rand() % (dnaSize - 2) + 1;
-        for (int j = 0; j < crossoverPoint; j++)
-        {
-            double gene = firstParentDNA.at(j);
-            childDNA.push_back(gene);
-        }
-
         int secondParentPos = parentPositions.at(1);
+        vector<double> firstParentDNA = DNAs.at(firstParentPos);
         vector<double> secondParentDNA = DNAs.at(secondParentPos);
-        
-        for (int j = crossoverPoint; j < dnaSize; j++)
-        {
-            double gene = secondParentDNA.at(j);
-            childDNA.push_back(gene);
-        }
+        int dnaSize = firstParentDNA.size();
+        int crossoverPoint = rand() % (dnaSize - 2) + 1;
+
+        childDNA = ConcatVector(childDNA, firstParentDNA, 0, crossoverPoint);
+        childDNA = ConcatVector(childDNA, secondParentDNA, crossoverPoint, dnaSize);
 
         return childDNA;
     }
