@@ -5,5 +5,8 @@ using namespace std;
 class MutationBySubstitution : public MutationStrategy
 {
 public:
-    using MutationStrategy::MutationStrategy;
+    MutationBySubstitution(double mutationProb = 0.03) : MutationStrategy(mutationProb)
+    {
+        sprintf(_args, "%.0f-sub", mutationProb*100);
+    }
 };

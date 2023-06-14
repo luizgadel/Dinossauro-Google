@@ -14,6 +14,7 @@ public:
     NPointCrossover(double crossoverProb = 0.80, int n = 2) : OnePointCrossover(crossoverProb)
     {
         n_ = n;
+        sprintf(_args, "%.0f-%d", crossoverProb*100, n);
     }
 
     vector<double> Crossover(vector<int> parentPositions, vector<vector<double>> DNAs)

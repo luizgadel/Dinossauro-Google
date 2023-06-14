@@ -66,10 +66,14 @@ private:
         return childDNA;
     }
 
+protected:
+    char _args[100] = "\"\"";
+
 public:
     OnePointCrossover(double crossoverProb = 0.8)
     {
         crossoverProb_ = crossoverProb;
+        sprintf(_args, "%.0f-1", crossoverProb*100);
     }
 
     void UpdateRouletteWheel(vector<Dinossauro> d)
@@ -96,5 +100,10 @@ public:
         }
 
         return childDNA;
+    }
+
+    char* GetArgs()
+    {
+        return _args;
     }
 };

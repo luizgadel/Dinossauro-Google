@@ -49,7 +49,7 @@ public:
         return _name;
     }
 
-    virtual char* getArgs() {
+    char* getArgs() {
         return _args;
     }
 };

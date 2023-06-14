@@ -12,6 +12,7 @@ public:
         mutationTypeOne_ = make_unique<MutationBySubstitution>();
         mutationTypeTwo_ = make_unique<MutationByMultiplication>();
         mutationTypeThree_ = make_unique<MutationBySum>();
+        sprintf(_args, "%.0f-rm", mutationProb*100);
     }
 
     double Mutate(double gene)

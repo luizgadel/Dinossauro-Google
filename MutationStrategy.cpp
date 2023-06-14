@@ -6,6 +6,7 @@ class MutationStrategy
 {
 protected:
     double mutationProb_;
+    char _args[100] = "\"\"";
 
 public:
     MutationStrategy(double mutationProb = 0.03)
@@ -32,5 +33,10 @@ public:
         }
 
         return dna;
+    }
+
+    char* GetArgs()
+    {
+        return _args;
     }
 };

@@ -110,11 +110,11 @@ public:
     GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03, double elitismPercent = 0.05)
     {
         strcpy(_name, "AG");
-        sprintf(_args, "%0.f-%0.f-%0.f", crossoverProbability*100, mutationProbability*100, elitismPercent*100);
         crossoverStrategy_ = make_unique<OnePointCrossover>(crossoverProbability);
         topNElitismParam_ = round(POPULACAO_TAMANHO * elitismPercent);
         topFiveElitism_ = TopNElitism(topNElitismParam_);
         mutationStrategy_ = make_unique<MutationBySubstitution>(mutationProbability);
+        sprintf(_args, "%s-%s-%0.f", crossoverStrategy_->GetArgs(), mutationStrategy_->GetArgs(), elitismPercent*100);
     }
 
     void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)

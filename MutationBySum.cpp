@@ -5,7 +5,10 @@ using namespace std;
 class MutationBySum : public MutationStrategy
 {
 public:
-    using MutationStrategy::MutationStrategy;
+    MutationBySum(double mutationProb = 0.03) : MutationStrategy(mutationProb)
+    {
+        sprintf(_args, "%.0f-sum", mutationProb*100);
+    }
 
     double Mutate(double gene)
     {
