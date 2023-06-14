@@ -12,6 +12,8 @@ public:
 
     void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
     {
+        EvolutionaryStrategy::Evolve(d, DNAs);
+
         static double RangeRandom = Dinossauros[0].TamanhoDNA;
 
         Dinossauro *Vetor[POPULACAO_TAMANHO];

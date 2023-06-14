@@ -43,7 +43,6 @@
 #include "MutationByMultiplication.cpp"
 #include "MutationBySum.cpp"
 #include "MutationByRM.cpp"
-#include <fstream>
 #include <iostream>
 
 ///////////////////////////////////////////////////
@@ -58,28 +57,6 @@ vector<int> topNPositions;
 bool VerificaCondicaoFim()
 {
     return (Geracao == 300);
-}
-
-void WriteBestFinessToCSV(vector<Dinossauro> topN)
-{
-    ofstream scoresFile;
-    char String[1000];
-    char msg[] = "%s, %d, %.0f, %.0f, %d,%s\n";
-    char filename[1000];
-    char filenameTemplate[] = "data/scores-%s.csv";
-
-    vector<Dinossauro>::iterator dinoIt = topN.begin();
-    Dinossauro bestDino = *dinoIt;
-    double bestFitness = bestDino.Fitness;
-
-    sprintf(filename, filenameTemplate, evoMethodName);
-    scoresFile.open(filename, ios::app);
-
-    sprintf(String, msg, evoMethodName, Geracao, DistanciaRecorde, bestFitness, POPULACAO_TAMANHO, evoMethodArgs);
-    scoresFile << String;
-    scoresFile.close();
-
-    lastGenSavedToCSV = Geracao;
 }
 
 void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenhar na tela
@@ -286,8 +263,6 @@ void EncerrarPartida()
         DistanciaRecorde = DistanciaAtual;
         SalvarRedeArquivo();
     }
-
-    WriteBestFinessToCSV(topN);
 }
 
 void CarregarRede()

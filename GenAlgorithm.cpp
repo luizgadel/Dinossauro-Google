@@ -119,6 +119,8 @@ public:
 
     void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)
     {
+        EvolutionaryStrategy::Evolve(d, DNAs);
+
         cout << "--- Evolução ---" << endl;
         cout << "Geração " << Geracao << endl;
 
