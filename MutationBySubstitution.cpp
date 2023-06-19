@@ -9,4 +9,9 @@ public:
     {
         sprintf(_args, "%.0f-sub", mutationProb*100);
     }
+
+    double Mutate(double gene)
+    {
+        return getRandomBetweenThousandMinusThousand();
+    }
 };

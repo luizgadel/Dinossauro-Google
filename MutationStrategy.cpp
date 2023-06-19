@@ -14,11 +14,8 @@ public:
         mutationProb_ = mutationProb;
     }
 
-    virtual double Mutate(double gene)
-    {
-        return getRandomBetweenThousandMinusThousand();
-    }
-
+    virtual double Mutate(double gene) = 0;
+    
     vector<double> Apply(vector<double> dna)
     {
         int dnaSize = dna.size();
