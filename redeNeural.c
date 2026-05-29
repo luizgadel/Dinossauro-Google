@@ -169,7 +169,7 @@ void RNA_CopiarDaSaida(RedeNeural *Rede, double *VetorSaida)
     }
 }
 
-void RNA_CalcularSaida(RedeNeural *Rede)
+void RNA_CalcularSaida(RedeNeural *Rede, bool log = true)
 {
     int i, j, k;
     double Somatorio;
@@ -178,38 +178,71 @@ void RNA_CalcularSaida(RedeNeural *Rede)
     for (i = 0; i < Rede->CamadaEscondida[0].QuantidadeNeuronios - BIAS; i++)
     {
         Somatorio = 0;
+        if (log) printf("----------- P/ Neurônio %d da câmada escondida 1\n", i+1);
         for (j = 0; j < Rede->CamadaEntrada.QuantidadeNeuronios; j++)
         {
-            Somatorio = Somatorio + Rede->CamadaEntrada.Neuronios[j].Saida * Rede->CamadaEscondida[0].Neuronios[i].Peso[j];
+            if (log) printf("Ligação %d: %.2f + ", j+1, Somatorio);
+            double pesoLigacao = Rede->CamadaEscondida[0].Neuronios[i].Peso[j];
+            if (log) printf("%.2f*", pesoLigacao);
+            double valorLigacao = Rede->CamadaEntrada.Neuronios[j].Saida;
+            if (log) printf("%.2f = ", valorLigacao);
+            double produto = pesoLigacao * valorLigacao;
+            if (log) printf("%.2f + %.2f = ", Somatorio, produto);
+            Somatorio = Somatorio + produto;
+            if (log) printf("%.2f\n", Somatorio);
         }
+        if (log) printf("Entrada -----> %.2f <------\n", Somatorio);
         Rede->CamadaEscondida[0].Neuronios[i].Saida = AtivacaoOcultas(Somatorio);
+
     }
     //////////////////////////////////////////////////////////////////////////////////
     /// Calculando saidas entre a camada escondida k e a camada escondida k-1 ///////////////////////////////////////////////////////////////////////////////
 
     for (k = 1; k < Rede->QuantidadeEscondidas; k++)
     {
+        
+        if (log) printf("----------- P/ Neurônio %d da câmada escondida %d\n", i+1, k+1);
         for (i = 0; i < Rede->CamadaEscondida[k].QuantidadeNeuronios - BIAS; i++)
         {
             Somatorio = 0;
             for (j = 0; j < Rede->CamadaEscondida[k - 1].QuantidadeNeuronios; j++)
             {
-                Somatorio = Somatorio + Rede->CamadaEscondida[k - 1].Neuronios[j].Saida * Rede->CamadaEscondida[k].Neuronios[i].Peso[j];
+                
+                if (log) printf("Ligação %d: %.2f + ", j+1, Somatorio);
+                double pesoLigacao = Rede->CamadaEscondida[k].Neuronios[i].Peso[j];
+                if (log) printf("%.2f*", pesoLigacao);
+                double valorLigacao = Rede->CamadaEscondida[k-1].Neuronios[j].Saida;
+                if (log) printf("%.2f = ", valorLigacao);
+                double produto = pesoLigacao * valorLigacao;
+                if (log) printf("%.2f + %.2f = ", Somatorio, produto);
+                Somatorio = Somatorio + produto;
+                if (log) printf("%.2f\n", Somatorio);
             }
             Rede->CamadaEscondida[k].Neuronios[i].Saida = AtivacaoOcultas(Somatorio);
         }
+        if (log) printf("Entrada -----> %.2f <------\n", Somatorio);
     }
     //////////////////////////////////////////////////////////////////////////////////
     /// Calculando saidas entre a camada de saida e a ultima camada escondida ///////////////////////////////////////////////////////////////////////////////
     for (i = 0; i < Rede->CamadaSaida.QuantidadeNeuronios; i++)
     {
         Somatorio = 0;
+        if (log) printf("----------- P/ Neurônio %d da câmada de saída\n", i+1);
         for (j = 0; j < Rede->CamadaEscondida[k - 1].QuantidadeNeuronios; j++)
         {
-            Somatorio = Somatorio + Rede->CamadaEscondida[k - 1].Neuronios[j].Saida * Rede->CamadaSaida.Neuronios[i].Peso[j];
+            if (log) printf("Ligação %d: %.2f + ", j+1, Somatorio);
+            double pesoLigacao = Rede->CamadaSaida.Neuronios[i].Peso[j];
+            if (log) printf("%.2f*", pesoLigacao);
+            double valorLigacao = Rede->CamadaEscondida[k - 1].Neuronios[j].Saida;
+            if (log) printf("%.2f = ", valorLigacao);
+            double produto = pesoLigacao * valorLigacao;
+            if (log) printf("%.2f + %.2f = ", Somatorio, produto);
+            Somatorio = Somatorio + produto;
+            if (log) printf("%.2f\n", Somatorio);
         }
         Rede->CamadaSaida.Neuronios[i].Saida = AtivacaoSaida(Somatorio);
     }
+    if (log) printf("Entrada -----> %.2f <------\n", Somatorio);
 }
 
 void RNA_CriarNeuronio(Neuronio *Neuron, int QuantidadeLigacoes)
