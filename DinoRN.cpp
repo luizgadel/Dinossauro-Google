@@ -58,18 +58,6 @@ bool VerificaCondicaoFim()
 {
     return (Geracao == 300);
 }
-
-void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenhar na tela
-{
-    while (PIG_jogoRodando() == 1 && !VerificaCondicaoFim())
-    {
-        vector<Dinossauro> d = arrayToVector(Dinossauros);
-        tie(topN, topNPositions) = getTopN(d, 10);
-        Desenhar(topN, topNPositions, lastGenBestDino, evoMethodName);
-        std::this_thread::sleep_for(std::chrono::milliseconds(5));
-    }
-}
-
 void AplicarGravidade()
 {
     for (int i = 0; i < QuantidadeDinossauros; i++)
@@ -299,6 +287,45 @@ void ConfiguracoesIniciais()
     InicializarNovaPartida();
 }
 
+
+void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenhar na tela
+{
+    while (PIG_jogoRodando() == 1 && !VerificaCondicaoFim())
+    {
+        
+        double td = TempoDecorrido(TimerGeral);
+        if (td >= Periodo)
+        {
+            MovimentarChao();
+            MovimentarMontanhas();
+            MovimentarNuvem();
+            MovimentarObstaculos();
+            MovimentarDinossauros();
+    
+            AtualizarFramePassaro();
+            AtualizarFrameDinossauro();
+            AtualizarFrameAviao();
+            AtualizarMelhorDinossauro();
+            AplicarGravidade();
+            AplicarColisao();
+            ControlarEstadoDinossauros();
+    
+            if (fabs(VELOCIDADE) < 8)
+            {
+                VELOCIDADE = VELOCIDADE - 0.0005;
+            }
+    
+            DistanciaAtual = DistanciaAtual + fabs(VELOCIDADE);
+            if (DistanciaAtual > 1000000 && DistanciaAtual > DistanciaRecorde)
+            {
+                // SalvarRedeArquivo();
+                DinossaurosMortos = POPULACAO_TAMANHO;
+            }
+            ReiniciarTimer(TimerGeral);
+        }
+    }
+}
+
 using namespace std;
 
 void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
@@ -368,38 +395,10 @@ public:
         {
             AtualizarJanela();
             VerificarTeclas();
-
-            if (TempoDecorrido(TimerGeral) >= Periodo)
-            {
-                MovimentarChao();
-                MovimentarMontanhas();
-                MovimentarNuvem();
-                MovimentarObstaculos();
-                MovimentarDinossauros();
-
-                AtualizarFramePassaro();
-                AtualizarFrameDinossauro();
-                AtualizarFrameAviao();
-                AtualizarMelhorDinossauro();
-                AplicarGravidade();
-                AplicarColisao();
-                ControlarEstadoDinossauros();
-
-                if (fabs(VELOCIDADE) < 8)
-                {
-                    VELOCIDADE = VELOCIDADE - 0.0005;
-                }
-
-                DistanciaAtual = DistanciaAtual + fabs(VELOCIDADE);
-                if (DistanciaAtual > 1000000 && DistanciaAtual > DistanciaRecorde)
-                {
-                    // SalvarRedeArquivo();
-                    DinossaurosMortos = POPULACAO_TAMANHO;
-                }
-
+            vector<Dinossauro> d = arrayToVector(Dinossauros);
+            tie(topN, topNPositions) = getTopN(d, 10);
+            Desenhar(topN, topNPositions, lastGenBestDino, evoMethodName);
                 VerificarFimDePartida(move(strategy_));
-                ReiniciarTimer(TimerGeral);
-            }
         }
         FinalizarJanela();
     }
