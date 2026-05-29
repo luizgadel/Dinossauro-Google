@@ -96,7 +96,48 @@ void RNA_CopiarParaEntrada(RedeNeural *Rede, double *VetorEntrada)
 
     for (i = 0; i < Rede->CamadaEntrada.QuantidadeNeuronios - BIAS; i++)
     {
-        Rede->CamadaEntrada.Neuronios[i].Saida = VetorEntrada[i];
+
+        double saida = 1;
+        double entrada = VetorEntrada[i];
+        switch(i)
+        {
+            case 0:
+            {
+                saida = fabs(entrada) / 800.0;
+                break;
+            }
+            case 1:
+            {
+                saida = entrada / 73.0;
+                break;
+            }
+            case 2:
+            {
+                saida = entrada / 90.0;
+                break;
+            }
+            case 3:
+            {
+                saida = entrada / 47.0;
+                break;
+            }
+            case 4:
+            {
+                saida = entrada / 8.0;
+                if (entrada > 8)
+                {
+                    saida = 1;
+                }
+                break;
+            }
+            case 5:
+            {
+                saida = entrada / 120.0;
+                break;
+            }
+        }
+
+        Rede->CamadaEntrada.Neuronios[i].Saida = saida;
     }
 }
 
