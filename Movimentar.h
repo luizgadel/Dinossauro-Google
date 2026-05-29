@@ -70,7 +70,7 @@ void MovimentarDinossauros()
         {
             if (Dinossauros[i].Estado == 0 || Dinossauros[i].Estado == 1)
             {
-                Dinossauros[i].Fitness = Dinossauros[i].Fitness + 2.0;
+                Dinossauros[i].Fitness = Dinossauros[i].Fitness + 1.0;
             }
             else
             {

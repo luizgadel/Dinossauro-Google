@@ -246,7 +246,7 @@ void updateDNADaVezByDinoId(vector<double> newDNA, int dinoId)
 
 double getRandomBetweenThousandMinusThousand()
 {
-    return ((randn() * 2) - 1) * 1000;
+    return ((randn() * 2) - 1);
 }
 
 vector<int> GetRandomVector(int n, int limit, int linCoef = 0)
