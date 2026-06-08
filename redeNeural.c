@@ -169,7 +169,7 @@ void RNA_CopiarDaSaida(RedeNeural *Rede, double *VetorSaida)
     }
 }
 
-void RNA_CalcularSaida(RedeNeural *Rede, bool log = true)
+void RNA_CalcularSaida(RedeNeural *Rede, bool log = false)
 {
     int i, j, k;
     double Somatorio;
