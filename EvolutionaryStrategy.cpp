@@ -12,7 +12,7 @@ private:
         char String[1000];
         char msg[] = "%s, %d, %.0f, %.0f, %d,%s\n";
         char filename[1000];
-        char filenameTemplate[] = "data/scores-%s.csv";
+        char filenameTemplate[] = "data/scores-%s-%d.csv";
 
         
         vector<Dinossauro> topN;
@@ -22,7 +22,7 @@ private:
         Dinossauro bestDino = *dinoIt;
         double bestFitness = bestDino.Fitness;
 
-        sprintf(filename, filenameTemplate, _name);
+        sprintf(filename, filenameTemplate, _name, _indice);
         scoresFile.open(filename, ios::app);
 
         sprintf(String, msg, _name, Geracao, DistanciaRecorde, bestFitness, POPULACAO_TAMANHO, _args);
@@ -33,6 +33,7 @@ private:
 protected:
     char _name[100] = "Estratégia de Evolução";
     char _args[100] = "\"\"";
+    int _indice = 0;
 
 public:
     virtual void Evolve(vector<Dinossauro> &d, vector<vector<double>> &DNAs)

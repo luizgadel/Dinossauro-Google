@@ -17,7 +17,9 @@ Obstaculo obstaculosModelo[20000];
 int Fonte, FonteVermelha, FonteAzul;
 double VELOCIDADE;
 int TimerGeral = 0;
-double Periodo = 0.005;
+int TimerSimTPS = 0;
+double SimTPS = 0.0;
+double Periodo = 0.0005;
 double DistanciaRecorde, DistanciaAtual;
 
 int DinossaurosMortos;

@@ -7,6 +7,7 @@ PIG_Cor calcularCor(double Intensidade, PIG_Cor CorBase)
     CorBase.r = CorBase.r * Intensidade;
     CorBase.g = CorBase.g * Intensidade;
     CorBase.b = CorBase.b * Intensidade;
+    CorBase.a = Intensidade * 255;
 
     return CorBase;
 }
@@ -75,10 +76,16 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
 
     /// Desenhar Conexoes
 
+    int diffEntradaEscondidas = qtdNeuroEscondidas - qtdNeuroEntrada;
+    //printf("Diferença entre entradas e escondidas: %d\n", diffEntradaEscondidas);
+    double diffPorEntrada = (double) diffEntradaEscondidas / qtdNeuroEntrada;
+    //printf("Diferença por entrada: %.2f\n", diffPorEntrada);
+
+
     for (int i = 0; i < qtdNeuroEntrada - 1; i++)
     {
         NeuroEntradaX[i] = XOrigem;
-        NeuroEntradaY[i] = YOrigem - i * EscalaAltura;
+        NeuroEntradaY[i] = YOrigem - (i * (1+diffPorEntrada)+0.5*diffPorEntrada)*EscalaAltura;
     }
 
     for (int i = 0; i < qtdEscondidas; i++)
@@ -166,49 +173,8 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
         PIG_Cor cor;
         double Opacidade;
 
-        switch (i)
-        {
-        case 0:
-        {
-            Opacidade = fabs(Entrada[0]) / 800.0;
-            cor = calcularCor(Opacidade, BRANCO);
-        }
-        break;
-        case 1:
-        {
-            Opacidade = Entrada[1] / 73.0;
-            cor = calcularCor(Opacidade, BRANCO);
-        }
-        break;
-        case 2:
-        {
-            Opacidade = Entrada[2] / 90.0;
-            cor = calcularCor(Opacidade, BRANCO);
-        }
-        break;
-        case 3:
-        {
-            Opacidade = Entrada[3] / 47.0;
-            cor = calcularCor(Opacidade, BRANCO);
-        }
-        break;
-        case 4:
-        {
-            Opacidade = Entrada[4] / 8.0;
-            if (Entrada[4] > 8)
-            {
-                Opacidade = 1;
-            }
-            cor = calcularCor(Opacidade, BRANCO);
-        }
-        break;
-        case 5:
-        {
-            Opacidade = Entrada[5] / 120.0;
-            cor = calcularCor(Opacidade, BRANCO);
-        }
-        break;
-        }
+        Opacidade = fabs(Entrada[i]);
+        cor = calcularCor(Opacidade, BRANCO);
 
         DefinirColoracao(SpriteNeuronAtivado, cor);
         DefinirOpacidade(SpriteLuz, Opacidade * 255);
@@ -449,6 +415,15 @@ void DesenharDinossauros()
     }
 }
 
+void DrawFPS(char *String)
+{
+    sprintf(String, "Render: %.0f fps", PegarFPS());
+    EscreverDireita(String, LARG_TELA - 10, ALT_TELA - 15, Fonte);
+
+    sprintf(String, "Sim: %.0f t/s", SimTPS);
+    EscreverDireita(String, LARG_TELA - 10, ALT_TELA - 35, Fonte);
+}
+
 void DrawGenInfo(char *String, int margin, int BASE, char evoMethodName[100])
 {
 
@@ -505,9 +480,9 @@ void DrawDino(Dinossauro dino, int topFivePos, int dinoId, int xTopFive, int xMa
         EscreverEsquerda(String, xTopFive, yTopFive, Fonte);
         gene = dino.DNA[j];
         if (gene > 0)
-            cor = (PIG_Cor){255, 0, 0, (gene) / 4};
+            cor = (PIG_Cor){255, 0, 0, (gene) *255};
         else
-            cor = (PIG_Cor){0, 0, 255, (gene) * (-1) / 4};
+            cor = (PIG_Cor){0, 0, 255, (gene) * (-1) *255};
 
         DesenhaCirculo(xStart + xMargin * j, yStart - 3 * yMargin / 8, 10, cor);
     }
@@ -563,6 +538,7 @@ void Desenhar(vector<Dinossauro> topN, vector<int> topNPositions, Dinossauro las
         char String[1000];
 
         DrawGenInfo(String, margin, BASE, evoMethodName);
+        DrawFPS(String);
 
         int xTopFive = 685;
         int yTopFive = 500;

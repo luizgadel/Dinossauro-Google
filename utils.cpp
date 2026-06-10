@@ -76,16 +76,32 @@ vector<int> getRouletteWheel(vector<Dinossauro> d)
     return rouletteWheel;
 }
 
+static mt19937 &getRandomEngine()
+{
+    static mt19937 rng(static_cast<uint32_t>(
+        std::chrono::high_resolution_clock::now().time_since_epoch().count()));
+    return rng;
+}
+
 double randn()
 {
-    mt19937_64 rng;
-    // initialize the random number generator with time-dependent seed
-    uint64_t timeSeed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    std::seed_seq ss{uint32_t(timeSeed & 0xffffffff), uint32_t(timeSeed >> 32)};
-    rng.seed(ss);
-    // initialize a uniform distribution between 0 and 1
     std::uniform_real_distribution<double> unif(0, 1);
-    return unif(rng);
+    return unif(getRandomEngine());
+}
+
+double gaussianRandom(double mean, double sigma)
+{
+    std::normal_distribution<double> dist(0.0, 1.0);
+    return mean + sigma * dist(getRandomEngine());
+}
+
+double clampGene(double value)
+{
+    if (value < -1.0)
+        return -1.0;
+    if (value > 1.0)
+        return 1.0;
+    return value;
 }
 
 template <typename T>

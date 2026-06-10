@@ -107,13 +107,15 @@ private:
     }
 
 public:
-    GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03, double elitismPercent = 0.05)
+    GenAlgorithm(double crossoverProbability = 0.8, double mutationProbability = 0.03, double elitismPercent = 0.05, int indice = 0)
     {
+        _indice = indice;
         strcpy(_name, "AG");
+        sprintf(_name, "AG", indice);
         crossoverStrategy_ = make_unique<OnePointCrossover>(crossoverProbability);
         topNElitismParam_ = round(POPULACAO_TAMANHO * elitismPercent);
         topFiveElitism_ = TopNElitism(topNElitismParam_);
-        mutationStrategy_ = make_unique<MutationBySubstitution>(mutationProbability);
+        mutationStrategy_ = make_unique<MutationByRM>(mutationProbability);
         sprintf(_args, "%s-%s-%0.f", crossoverStrategy_->GetArgs(), mutationStrategy_->GetArgs(), elitismPercent*100);
     }
 

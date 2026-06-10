@@ -12,6 +12,9 @@ int existeNuvem(double X, double Y)
     return 0;
 }
 
+double gaussianRandom(double mean, double sigma);
+double clampGene(double value);
+
 double getRandomValue()
 {
     return (rand() % 20 / 10.0) - 1.0;
@@ -65,6 +68,7 @@ void SalvarRedeArquivo()
             DINO_BRAIN_QTD_HIDE,
             DINO_BRAIN_QTD_OUTPUT);
 
+    //printf("Salvando %s\n", String);
     FILE *f = fopen(String, "wb");
     fwrite(&Dinossauros[Indice].TamanhoDNA, 1, sizeof(int), f);
     fwrite(Dinossauros[Indice].DNA, Dinossauros[Indice].TamanhoDNA, sizeof(double), f);

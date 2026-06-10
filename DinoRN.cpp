@@ -5,11 +5,11 @@
 #define MODO_JOGO 0 /// 0 = TREINANDO   - OBS: Aumentar tamanho da populacao para 2000
                     /// 1 = JOGAVEL     - OBS: Diminuir tamanho da populacao para 1
 
-#define POPULACAO_TAMANHO 500
+#define POPULACAO_TAMANHO 2000
 
 #define DINO_BRAIN_QTD_LAYERS 1 /// Quantidade de camadas escondidas na rede neural
 #define DINO_BRAIN_QTD_INPUT 6  /// Quantidade de neuronios na camada de entrada
-#define DINO_BRAIN_QTD_HIDE 6   /// Quantidade de neuronios nas camadas escondidas
+#define DINO_BRAIN_QTD_HIDE 13   /// Quantidade de neuronios nas camadas escondidas
 #define DINO_BRAIN_QTD_OUTPUT 3 /// Quantidade de neuronios na camada de saida
 
 #include "PIG.h"        ///   Biblioteca Grafica
@@ -276,6 +276,7 @@ void ConfiguracoesIniciais()
     InicializarGrafico();
 
     TimerGeral = CriarTimer();
+    TimerSimTPS = CriarTimer();
     Fonte = CriarFonteNormal("fontes/arial.ttf", 15, PRETO, 0, PRETO);
     FonteVermelha = CriarFonteNormal("fontes/arial.ttf", 15, VERMELHO, 0, PRETO);
     FonteAzul = CriarFonteNormal("fontes/arial.ttf", 15, AZUL, 0, PRETO);
@@ -288,14 +289,16 @@ void ConfiguracoesIniciais()
 }
 
 
-void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenhar na tela
+void DesenharThread() /// Thread da simulacao (tick do jogo, independente do render)
 {
+    int simTickCount = 0;
+
     while (PIG_jogoRodando() == 1 && !VerificaCondicaoFim())
     {
-        
         double td = TempoDecorrido(TimerGeral);
         if (td >= Periodo)
         {
+            simTickCount++;
             MovimentarChao();
             MovimentarMontanhas();
             MovimentarNuvem();
@@ -323,8 +326,17 @@ void DesenharThread() /// Fun��o chamada pela Thread responsavel por desenha
             }
             ReiniciarTimer(TimerGeral);
         }
+
+        double simElapsed = TempoDecorrido(TimerSimTPS);
+        if (simElapsed >= 0.25)
+        {
+            SimTPS = simTickCount / simElapsed;
+            simTickCount = 0;
+            ReiniciarTimer(TimerSimTPS);
+        }
     }
 }
+
 
 using namespace std;
 

@@ -24,6 +24,11 @@ void EscreverEsquerda(char const *str, int x, double y, int font)
     return PIG_escreverEsquerda(str, x, y, font);
 }
 
+void EscreverDireita(char *str, int x, double y, int font)
+{
+    return PIG_escreverDireita(str, x, y, font);
+}
+
 void DesenharLinhaSimples(double x1, double y1, double x2, double y2, PIG_Cor cor)
 {
     return PIG_desenharLinha(x1, y1, x2, y2, cor, 1);
@@ -87,6 +92,11 @@ int CriarFonteNormal(char const *nome, int tamanho, PIG_Cor corLetra, int contor
 void AtualizarJanela()
 {
     PIG_atualizarJanela();
+}
+
+double PegarFPS()
+{
+    return PIG_pegarFPS();
 }
 
 void FinalizarJanela()
