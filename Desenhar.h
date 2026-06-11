@@ -12,8 +12,8 @@ PIG_Cor calcularCor(double Intensidade, PIG_Cor CorBase)
     return CorBase;
 }
 
-#define AZUL_GRAFICO_PARTIDA ((PIG_Cor){0, 0, 64, 255})
-#define AZUL_GRAFICO_PARCIAL ((PIG_Cor){0, 0, 128, 255})
+#define AZUL_GRAFICO_PARTIDA_OPACIDADE 128
+#define AZUL_GRAFICO_PARCIAL_OPACIDADE 64
 
 void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
 {
@@ -318,16 +318,16 @@ void DesenharGrafico(int X, int Y, int Largura, int Altura)
             DesenharPonto(PontoX, YBest, AZUL, 3);
 
         if (i == GeracaoCompleta - 1 && GeracaoCompleta > 0)
-            DesenharPonto(PontoX, (int)YBest, AZUL_GRAFICO_PARTIDA, 3);
+            DesenharPonto(PontoX, (int)YBest, calcularCor(AZUL_GRAFICO_PARTIDA_OPACIDADE,AZUL), 3);
 
         if (i == GeracaoCompleta)
         {
-            DesenharPonto(PontoX, (int)YBest, AZUL_GRAFICO_PARCIAL, 3);
+            DesenharPonto(PontoX, (int)YBest, calcularCor(AZUL_GRAFICO_PARCIAL_OPACIDADE,AZUL), 3);
 
             int YPartida = Y + 1 + (int)(BestFitnessGeracao() / scala);
             if (YPartida > yTopo)
                 YPartida = yTopo;
-            DesenharPonto(PontoX, YPartida, AZUL_GRAFICO_PARTIDA, 3);
+            DesenharPonto(PontoX, YPartida, calcularCor(AZUL_GRAFICO_PARTIDA_OPACIDADE,AZUL), 3);
         }
     }
 
@@ -344,7 +344,7 @@ void DesenharGrafico(int X, int Y, int Largura, int Altura)
             YGreenN1 = yTopo;
         if (YGreenN > yTopo)
             YGreenN = yTopo;
-        DesenharLinhaSimples(PontoXN1, YGreenN1, PontoXN, YGreenN, AZUL_GRAFICO_PARTIDA);
+        DesenharLinhaSimples(PontoXN1, YGreenN1, PontoXN, YGreenN, calcularCor(AZUL_GRAFICO_PARTIDA_OPACIDADE,AZUL));
     }
 }
 
