@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <vector>
 #include <chrono>
 #include <random>
@@ -107,18 +108,28 @@ double clampGene(double value)
 template <typename T>
 void printVector(vector<T> vect)
 {   
-    cout << "[";
+    cout << "-> |" << vect.size() << "|" << endl;
+    cout << fixed << setprecision(3);
 
     typename vector<T>::iterator it = vect.begin();
-    if (vect.size() > 10) {
-        for (; it != vect.begin() + 5; ++it)
+
+    int limiter = DINO_BRAIN_QTD_INPUT + 1;
+    int initialPos = 0;
+    int finalPos = limiter;
+    for (int i = 0; i < DINO_BRAIN_QTD_HIDE + DINO_BRAIN_QTD_OUTPUT; i++) {
+        cout << initialPos << "-" << finalPos << ": [";
+        for (; it != vect.begin() + finalPos; ++it)
         {
             cout << " " << *it;
         }
-        printf(" ...");
-        it = vect.end() - 5;
-    }
+        cout << "]" << endl;
+        if (i == DINO_BRAIN_QTD_HIDE -1 )
+            limiter = DINO_BRAIN_QTD_HIDE + 1;
 
+        initialPos = finalPos;
+        finalPos += limiter;
+    }
+    
     for (; it != vect.end(); ++it)
     {
         cout << " " << *it;
