@@ -1,6 +1,5 @@
 #include "DinoRN.cpp"
 #include "GenAlgorithm.cpp"
-#include "RechenbergMuLambdaES.cpp"
 #include <cstring>
 
 DinoRN DRNGeneticAlgorithm(char *indice = "0")
