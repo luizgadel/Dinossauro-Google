@@ -2,7 +2,6 @@
 
 void GerarListaObstaculos()
 {
-    int contadorEspinhos = 0;
     int Largura;
 
     obstaculosModelo[0].X = 1250;
@@ -11,19 +10,7 @@ void GerarListaObstaculos()
 
     for (int i = 1; i < 20000; i++)
     {
-        if (contadorEspinhos >= 10)
-        {
-            obstaculosModelo[i].Tipo = ESPINHO_CODIGO_TIPO;
-            contadorEspinhos = 0;
-        }
-        else
-        {
-            obstaculosModelo[i].Tipo = rand() % 6;
-            if (DINO_BRAIN_QTD_OUTPUT == 3)
-            {
-                contadorEspinhos++;
-            }
-        }
+        obstaculosModelo[i].Tipo = rand() % 6;
 
         /// ---------------
 
@@ -40,16 +27,13 @@ void GerarListaObstaculos()
         }
         else
         {
-            if (obstaculosModelo[i].Tipo == ESPINHO_CODIGO_TIPO)
-            {
-                obstaculosModelo[i].Y = 10;
-            }
-            else
-            {
-                obstaculosModelo[i].Y = 15;
-            }
+            obstaculosModelo[i].Y = 15;
         }
     }
+
+    FILE *f = fopen("obstaculos.dat", "wb");
+    fwrite(obstaculosModelo, 20000, sizeof(Obstaculo), f);
+    fclose(f);
 }
 
 void GerarListaObstaculosTreinoSemEspinho()
