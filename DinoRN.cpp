@@ -10,7 +10,7 @@
 #define DINO_BRAIN_QTD_LAYERS 1 /// Quantidade de camadas escondidas na rede neural
 #define DINO_BRAIN_QTD_INPUT 6  /// Quantidade de neuronios na camada de entrada
 #define DINO_BRAIN_QTD_HIDE 13   /// Quantidade de neuronios nas camadas escondidas
-#define DINO_BRAIN_QTD_OUTPUT 3 /// Quantidade de neuronios na camada de saida
+#define DINO_BRAIN_QTD_OUTPUT 2 /// Quantidade de neuronios na camada de saida
 
 #include "PIG.h"        ///   Biblioteca Grafica
 #include "Sprites.h"    ///   Todos os c�digos sobre sprite
@@ -91,22 +91,7 @@ void AplicarGravidade()
     {
         if (Dinossauros[i].Y > 15)
         {
-            if (Dinossauros[i].Estado != 4) /// VOANDO
-            {
-                Dinossauros[i].VelocidadeY = Dinossauros[i].VelocidadeY - (0.08);
-            }
-            else
-            {
-                if (Dinossauros[i].VelocidadeY <= 0)
-                {
-                    Dinossauros[i].VelocidadeY = 0;
-                }
-                else
-                {
-                    Dinossauros[i].VelocidadeY = Dinossauros[i].VelocidadeY - (0.08);
-                }
-            }
-
+            Dinossauros[i].VelocidadeY = Dinossauros[i].VelocidadeY - (0.08);
             Dinossauros[i].Y = Dinossauros[i].Y + Dinossauros[i].VelocidadeY;
         }
         else
@@ -126,7 +111,7 @@ void ProcessarDinossauroNN(int i)
         return;
     }
 
-    int Abaixar = 0, Pular = 0, Aviao = 0;
+    int Abaixar = 0, Pular = 0;
     double Saida[10];
     double Entrada[10];
 
@@ -154,16 +139,10 @@ void ProcessarDinossauroNN(int i)
     else
         Abaixar = 1;
 
-    if (Saida[2] == 0.0)
-        Aviao = 0;
-    else
-        Aviao = 1;
-
     if (MODO_JOGO == 1 && i == 1)
     {
         Pular = 0;
         Abaixar = 0;
-        Aviao = 0;
 
         if (PIG_teclado[TECLA_CIMA] == 1)
         {
@@ -173,66 +152,32 @@ void ProcessarDinossauroNN(int i)
         {
             Abaixar = 1;
         }
-        if (PIG_teclado[TECLA_BARRAESPACO] == 1)
-        {
-            Aviao = 1;
-        }
 
         Saida[0] = Abaixar;
         Saida[1] = Pular;
-        Saida[2] = Aviao;
     }
 
-    if (DINO_BRAIN_QTD_OUTPUT == 2)
-        Aviao = 0;
-
-    if (Dinossauros[i].Estado != 4) /// Voando
+    if (Dinossauros[i].Estado != 2)
     {
-        if (Dinossauros[i].Estado != 2)
-        {
-            Dinossauros[i].Estado = 0;
-        }
-        if (Abaixar && Dinossauros[i].Estado != 2)
-        {
-            Dinossauros[i].Estado = 1;
-        }
-        if (Abaixar && Dinossauros[i].Estado == 2)
-        {
-            if (Dinossauros[i].VelocidadeY > 0)
-                Dinossauros[i].VelocidadeY = 0;
-            Dinossauros[i].Y = Dinossauros[i].Y - 2;
-        }
-        if (Pular && Dinossauros[i].Estado != 2)
-        {
-            Dinossauros[i].Estado = 2;
-            Dinossauros[i].Y = Dinossauros[i].Y + 1;
-
-            Dinossauros[i].VelocidadeY = Dinossauros[i].VelocidadeY + 4.0;
-        }
-        if (Aviao && Dinossauros[i].AviaoCooldown <= 0)
-        {
-            Dinossauros[i].Estado = 4;
-            Dinossauros[i].Y = Dinossauros[i].Y + 1;
-            if (Dinossauros[i].VelocidadeY <= 0.5 && Dinossauros[i].Y < 25)
-            {
-                Dinossauros[i].VelocidadeY = Dinossauros[i].VelocidadeY + 4.0;
-            }
-            Dinossauros[i].AviaoCooldown = 4000.0;
-        }
+        Dinossauros[i].Estado = 0;
     }
-    else
+    if (Abaixar && Dinossauros[i].Estado != 2)
     {
-        if (Dinossauros[i].AviaoDeslocamento >= 820.0)
-        {
-            Dinossauros[i].AviaoDeslocamento = 0;
-            Dinossauros[i].Estado = 2;
-        }
-        else
-        {
-            Dinossauros[i].AviaoDeslocamento = Dinossauros[i].AviaoDeslocamento + fabs(VELOCIDADE);
-        }
+        Dinossauros[i].Estado = 1;
     }
-    Dinossauros[i].AviaoCooldown = Dinossauros[i].AviaoCooldown - fabs(VELOCIDADE);
+    if (Abaixar && Dinossauros[i].Estado == 2)
+    {
+        if (Dinossauros[i].VelocidadeY > 0)
+            Dinossauros[i].VelocidadeY = 0;
+        Dinossauros[i].Y = Dinossauros[i].Y - 2;
+    }
+    if (Pular && Dinossauros[i].Estado != 2)
+    {
+        Dinossauros[i].Estado = 2;
+        Dinossauros[i].Y = Dinossauros[i].Y + 1;
+
+        Dinossauros[i].VelocidadeY = Dinossauros[i].VelocidadeY + 4.0;
+    }
 
     if (MODO_JOGO == 1)
     {
@@ -244,8 +189,6 @@ void ProcessarDinossauroNN(int i)
             Dinossauros[i].SpriteAtual = 4 + Dinossauros[i].Frame;
         if (Dinossauros[i].Estado == 3) /// Muerto
             Dinossauros[i].SpriteAtual = 6 + Dinossauros[i].Frame;
-        if (Dinossauros[i].Estado == 4) /// Voando
-            Dinossauros[i].SpriteAtual = 8 + Dinossauros[i].Frame;
     }
 }
 
@@ -291,7 +234,6 @@ void ControlarEstadoDinossauros()
 void InicializarNovaPartida()
 {
     GerarListaObstaculos();
-    CarregarListaObstaculos();
 
     DistanciaAtual = 0;
     VELOCIDADE = -3;
@@ -333,7 +275,7 @@ void ConfiguracoesIniciais()
 
     AlocarDinossauros();
     AlocarObstaculos();
-    CarregarListaObstaculos();
+    GerarListaObstaculos();
     InicializarGrafico();
 
     TimerGeral = CriarTimer();

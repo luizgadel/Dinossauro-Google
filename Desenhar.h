@@ -68,12 +68,6 @@ void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
     sprintf(String, "Abaixar");
     EscreverEsquerda(String, X + Largura - 100, temp - 1 * EscalaAltura - 5, Fonte);
 
-    if (DINO_BRAIN_QTD_OUTPUT == 3)
-    {
-        sprintf(String, "Aviao");
-        EscreverEsquerda(String, X + Largura - 100, temp - 2 * EscalaAltura - 5, Fonte);
-    }
-
     /// Desenhar Conexoes
 
     int diffEntradaEscondidas = qtdNeuroEscondidas - qtdNeuroEntrada;
