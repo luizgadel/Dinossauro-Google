@@ -27,4 +27,7 @@ int ObstaculoDaVez = 1;
 int Geracao;
 int DesenharTela = 1;
 
-unsigned int obstaculosSeedFixa = 0; /// 0 = seed automática (time ^ Geracao) em cada partida
+unsigned int obstaculosSeedFixa = 0; /// 0 = seed automática independente por partida; >0 = seed fixa via CLI
+
+int partidaAtual = 0;
+double FitnessSoma[POPULACAO_TAMANHO];

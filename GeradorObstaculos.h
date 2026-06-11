@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <time.h>
+#include <chrono>
 
 /// srand() afeta todo rand() do processo (obstáculos, AG, posição inicial dos dinos).
 void DefinirSeedObstaculos()
@@ -9,7 +10,7 @@ void DefinirSeedObstaculos()
     if (obstaculosSeedFixa > 0)
         seed = obstaculosSeedFixa;
     else
-        seed = (unsigned int)time(nullptr) ^ (unsigned int)Geracao;
+        seed = (unsigned int)std::chrono::high_resolution_clock::now().time_since_epoch().count();
 
     srand(seed);
 }

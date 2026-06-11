@@ -9,7 +9,8 @@
 #define MODO_JOGO 0 /// 0 = TREINANDO   - OBS: Aumentar tamanho da populacao para 2000
                     /// 1 = JOGAVEL     - OBS: Diminuir tamanho da populacao para 1
 
-#define POPULACAO_TAMANHO 2000
+#define POPULACAO_TAMANHO 1000
+#define PARTIDAS_POR_GERACAO 25
 
 #define DINO_BRAIN_QTD_LAYERS 1 /// Quantidade de camadas escondidas na rede neural
 #define DINO_BRAIN_QTD_INPUT 6  /// Quantidade de neuronios na camada de entrada
@@ -247,6 +248,9 @@ void InicializarNovaPartida()
 
     for (int i = 0; i < POPULACAO_TAMANHO; i++)
     {
+        if (MODO_JOGO == 0)
+            Dinossauros[i].ResetarFitness = 1;
+
         InicializarDinossauro(i, DNADaVez[i], 300 + (rand() % 200 - 100), 15);
     }
 }
@@ -289,7 +293,11 @@ void ConfiguracoesIniciais()
     FonteAzul = CriarFonteNormal("fontes/arial.ttf", 15, AZUL, 0, PRETO);
     DistanciaRecorde = 0;
     Geracao = 0;
+    partidaAtual = 0;
     MelhorDinossauro = &Dinossauros[0];
+
+    for (int i = 0; i < POPULACAO_TAMANHO; i++)
+        FitnessSoma[i] = 0;
 
     InicializarDNA();
     InicializarNovaPartida();
@@ -304,9 +312,27 @@ void VerificarFimDePartida(EvolutionaryStrategy &strategy)
     if (DinossaurosMortos == POPULACAO_TAMANHO)
     {
         EncerrarPartida();
+
         if (MODO_JOGO == 0)
         {
-            /* Atualiza o gráfico a cada fim da partida */
+            for (int i = 0; i < POPULACAO_TAMANHO; i++)
+                FitnessSoma[i] += Dinossauros[i].Fitness;
+
+            partidaAtual++;
+
+            if (partidaAtual < PARTIDAS_POR_GERACAO)
+            {
+                InicializarNovaPartida();
+                return;
+            }
+
+            for (int i = 0; i < POPULACAO_TAMANHO; i++)
+            {
+                Dinossauros[i].Fitness = FitnessSoma[i] / PARTIDAS_POR_GERACAO;
+                FitnessSoma[i] = 0;
+            }
+            partidaAtual = 0;
+
             if (Geracao < LARG_GRAFICO)
             {
                 GeracaoCompleta = Geracao + 1;
@@ -332,6 +358,7 @@ void VerificarFimDePartida(EvolutionaryStrategy &strategy)
             strategy.Evolve(d, DNAs);
             lastGenBestDino = strategy.getLastGenBestDino();
         }
+
         InicializarNovaPartida();
     }
 }
