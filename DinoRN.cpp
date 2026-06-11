@@ -31,6 +31,11 @@
 #include <thread>
 #include <chrono>
 #include <vector>
+#include <mutex>
+#include <memory>
+#include <atomic>
+
+#define SIM_RENDER_INTERVAL_FRAMES 3
 
 #include "ThreadPool.h"
 #include "utils.cpp"
@@ -54,6 +59,26 @@ char evoMethodArgs[100];
 int lastGenSavedToCSV = 0;
 vector<Dinossauro> topN;
 vector<int> topNPositions;
+
+std::mutex gameStateMutex;
+
+std::unique_ptr<ThreadPool> nnThreadPool;
+std::atomic<int> mortesNoTick{0};
+
+int ResolverNumNNWorkerThreads()
+{
+    if (NUM_NN_WORKER_THREADS > 0)
+    {
+        return NUM_NN_WORKER_THREADS;
+    }
+
+    unsigned int hw = std::thread::hardware_concurrency();
+    if (hw <= 2)
+    {
+        return 1;
+    }
+    return static_cast<int>(hw) - 2;
+}
 
 bool VerificaCondicaoFim()
 {
@@ -324,58 +349,10 @@ void ConfiguracoesIniciais()
 }
 
 
-void DesenharThread() /// Thread da simulacao (tick do jogo, independente do render)
-{
-    int simTickCount = 0;
-
-    while (PIG_jogoRodando() == 1 && !VerificaCondicaoFim())
-    {
-        double td = TempoDecorrido(TimerGeral);
-        if (td >= Periodo)
-        {
-            simTickCount++;
-            MovimentarChao();
-            MovimentarMontanhas();
-            MovimentarNuvem();
-            MovimentarObstaculos();
-            MovimentarDinossauros();
-    
-            AtualizarFramePassaro();
-            AtualizarFrameDinossauro();
-            AtualizarFrameAviao();
-            AtualizarMelhorDinossauro();
-            AplicarGravidade();
-            AplicarColisao();
-            ControlarEstadoDinossauros();
-    
-            if (fabs(VELOCIDADE) < 8)
-            {
-                VELOCIDADE = VELOCIDADE - 0.0005;
-            }
-    
-            DistanciaAtual = DistanciaAtual + fabs(VELOCIDADE);
-            if (DistanciaAtual > 1000000 && DistanciaAtual > DistanciaRecorde)
-            {
-                // SalvarRedeArquivo();
-                DinossaurosMortos = POPULACAO_TAMANHO;
-            }
-            ReiniciarTimer(TimerGeral);
-        }
-
-        double simElapsed = TempoDecorrido(TimerSimTPS);
-        if (simElapsed >= 0.25)
-        {
-            SimTPS = simTickCount / simElapsed;
-            simTickCount = 0;
-            ReiniciarTimer(TimerSimTPS);
-        }
-    }
-}
-
 
 using namespace std;
 
-void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
+void VerificarFimDePartida(EvolutionaryStrategy &strategy)
 {
     if (DinossaurosMortos == POPULACAO_TAMANHO)
     {
@@ -405,10 +382,61 @@ void VerificarFimDePartida(unique_ptr<EvolutionaryStrategy> &&Strategy)
             int tamDNA = (*d.begin()).TamanhoDNA;
             vector<vector<double>> DNAs = matrixToVector(DNADaVez, tamDNA);
 
-            Strategy->Evolve(d, DNAs);
-            lastGenBestDino = Strategy->getLastGenBestDino();
+            strategy.Evolve(d, DNAs);
+            lastGenBestDino = strategy.getLastGenBestDino();
         }
         InicializarNovaPartida();
+    }
+}
+
+void SimulacaoThread(EvolutionaryStrategy *strategy)/// Thread da simulacao (tick do jogo, independente do render)
+{
+    int simTickCount = 0;
+    while (PIG_jogoRodando() == 1 && !VerificaCondicaoFim())
+    {
+        if (Periodo <= 0.0 || TempoDecorrido(TimerGeral) >= Periodo)
+        {
+            simTickCount++;
+            std::lock_guard<std::mutex> lock(gameStateMutex);
+            MovimentarChao();
+            MovimentarMontanhas();
+            MovimentarNuvem();
+            MovimentarObstaculos();
+            MovimentarDinossauros();
+
+            if (MODO_JOGO == 1)
+            {
+                AtualizarFramePassaro();
+                AtualizarFrameDinossauro();
+                AtualizarFrameAviao();
+            }
+            AtualizarMelhorDinossauro();
+            AplicarGravidade();
+            AplicarColisaoParalelo();
+            ControlarEstadoDinossauros();
+
+            if (fabs(VELOCIDADE) < 8)
+            {
+                VELOCIDADE = VELOCIDADE - 0.0005;
+            }
+
+            DistanciaAtual = DistanciaAtual + fabs(VELOCIDADE);
+            if (DistanciaAtual > 1000000 && DistanciaAtual > DistanciaRecorde)
+            {
+                DinossaurosMortos = POPULACAO_TAMANHO;
+            }
+
+            VerificarFimDePartida(*strategy);
+            ReiniciarTimer(TimerGeral);
+        }
+
+        double simElapsed = TempoDecorrido(TimerSimTPS);
+        if (simElapsed >= 0.25)
+        {
+            SimTPS = simTickCount / simElapsed;
+            simTickCount = 0;
+            ReiniciarTimer(TimerSimTPS);
+        }
     }
 }
 
@@ -435,18 +463,41 @@ public:
     void startGame()
     {
         ConfiguracoesIniciais();
+        nnThreadPool = std::make_unique<ThreadPool>(ResolverNumNNWorkerThreads());
 
-        std::thread Desenho(DesenharThread);
+        std::thread simThread(SimulacaoThread, strategy_.get());
+
+        int renderFrame = 0;
 
         while (PIG_jogoRodando() == 1 && !VerificaCondicaoFim())
         {
             AtualizarJanela();
             VerificarTeclas();
-            vector<Dinossauro> d = arrayToVector(Dinossauros);
+            renderFrame++;
+
+            if (DesenharTela == 1 && renderFrame % SIM_RENDER_INTERVAL_FRAMES == 0)
+            {
+                vector<Dinossauro> d;
+                vector<int> positions;
+                Dinossauro bestDinoCopy;
+                char methodNameCopy[100];
+
+                {
+                    std::lock_guard<std::mutex> lock(gameStateMutex);
+                    d = arrayToVector(Dinossauros);
             tie(topN, topNPositions) = getTopN(d, 10);
-            Desenhar(topN, topNPositions, lastGenBestDino, evoMethodName);
-                VerificarFimDePartida(move(strategy_));
+                    positions = topNPositions;
+                    d = topN;
+                    bestDinoCopy = lastGenBestDino;
+                    strcpy(methodNameCopy, evoMethodName);
+                }
+
+                Desenhar(d, positions, bestDinoCopy, methodNameCopy);
         }
+        }
+
+        simThread.join();
+        nnThreadPool.reset();
         FinalizarJanela();
     }
 };
