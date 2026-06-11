@@ -2,6 +2,10 @@
 #define PASSARO_CODIGO_TIPO 5
 #define ESPINHO_CODIGO_TIPO 6
 
+#define OBSTACULO_TIPO_MIN 0
+#define OBSTACULO_TIPO_MAX 5
+#define OBSTACULO_TIPO_COUNT 6
+
 #define MODO_JOGO 0 /// 0 = TREINANDO   - OBS: Aumentar tamanho da populacao para 2000
                     /// 1 = JOGAVEL     - OBS: Diminuir tamanho da populacao para 1
 
