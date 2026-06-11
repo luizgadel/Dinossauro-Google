@@ -70,7 +70,7 @@ double FitnessMaximoGrafico()
     if (ref <= 0)
         return GRAPH_YMAX_INICIAL;
 
-    return ref * 3.0;
+    return ref * 2.0;
 }
 
 void InicializarDNA()
