@@ -75,17 +75,31 @@ void SalvarRedeArquivo()
     fclose(f);
 }
 
+#define PERIODO_MINIMO 0.0005
+#define PERIODO_MAXIMO 20.0
+
 void VerificarTeclas()
 {
     if (MODO_JOGO != 1)
     {
         if (PIG_tecla == TECLA_BAIXO)
         {
-            Periodo = Periodo / 2.0;
+            if (Periodo <= PERIODO_MINIMO)
+                Periodo = 0.0;
+            else if (Periodo / 2.0 < PERIODO_MINIMO)
+                Periodo = PERIODO_MINIMO;
+            else
+                Periodo = Periodo / 2.0;
         }
         if (PIG_tecla == TECLA_CIMA)
         {
-            Periodo = Periodo * 2.0;
+            if (Periodo == 0.0)
+                Periodo = PERIODO_MINIMO;
+            else
+                Periodo = Periodo * 2.0;
+
+            if (Periodo > PERIODO_MAXIMO)
+                Periodo = PERIODO_MAXIMO;
         }
     }
 

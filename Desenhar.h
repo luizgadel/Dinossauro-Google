@@ -431,7 +431,10 @@ void DrawGenInfo(char *String, int margin, int BASE, char evoMethodName[100])
     EscreverEsquerda(String, margin, BASE, Fonte);
 
     BASE -= margin;
-    sprintf(String, "Clock: %f segundo", Periodo);
+    if (Periodo <= 0.0)
+        sprintf(String, "Clock: %.5f s (maximo)");
+    else
+        sprintf(String, "Clock: %.5f s", Periodo);
     EscreverEsquerda(String, margin, BASE, Fonte);
 
     BASE -= margin;
@@ -439,7 +442,7 @@ void DrawGenInfo(char *String, int margin, int BASE, char evoMethodName[100])
     EscreverEsquerda(String, margin, BASE, Fonte);
 
     BASE -= margin;
-    sprintf(String, "Velocidade: %.2f (%.0f pixels por segundo)", fabs(VELOCIDADE), fabs(VELOCIDADE) / Periodo);
+        sprintf(String, "Velocidade: %.2f (%.0f px/s)", fabs(VELOCIDADE), fabs(VELOCIDADE) * SimTPS);
     EscreverEsquerda(String, margin, BASE, Fonte);
 
     BASE -= margin;
