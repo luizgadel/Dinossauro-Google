@@ -32,6 +32,7 @@
 #include <chrono>
 #include <vector>
 
+#include "ThreadPool.h"
 #include "utils.cpp"
 #include "EvolutionaryStrategy.cpp"
 #include "RandMutations.cpp"
@@ -92,26 +93,30 @@ void AplicarGravidade()
     }
 }
 
-void ControlarEstadoDinossauros() /// Fun��o responsavel por calcular a decis�o da rede neural e aplicar no dinossauro (ou seja, � a fun��o que faz ele pular, abaixar ou usar o aviao)
+void ProcessarDinossauroNN(int i)
 {
+    if (Dinossauros[i].Estado == 3)
+    {
+        return;
+    }
+
     int Abaixar = 0, Pular = 0, Aviao = 0;
     double Saida[10];
     double Entrada[10];
 
-    for (int i = 0; i < QuantidadeDinossauros; i++)
-    {
-        if (Dinossauros[i].Estado != 3)
-        {
-            Entrada[0] = DistanciaProximoObstaculo(Dinossauros[i].X);
-            Entrada[1] = LarguraProximoObstaculo(Dinossauros[i].X);
-            Entrada[2] = AlturaProximoObstaculo(Dinossauros[i].X);
-            Entrada[3] = ComprimentoProximoObstaculo(Dinossauros[i].X);
+    int indiceObstaculo = ProcurarProximoObstaculo(Dinossauros[i].X);
+    Obstaculo &obs = obstaculo[indiceObstaculo];
+
+    Entrada[0] = obs.X - Dinossauros[i].X;
+    Entrada[1] = obs.sprite[obs.FrameAtual]->Largura;
+    Entrada[2] = obs.Y;
+    Entrada[3] = obs.sprite[obs.FrameAtual]->Altura;
             Entrada[4] = fabs(VELOCIDADE);
             Entrada[5] = Dinossauros[i].Y;
 
-            RNA_CopiarParaEntrada(Dinossauros[i].Cerebro, Entrada); /// Enviando informa��es para a rede neural
-            RNA_CalcularSaida(Dinossauros[i].Cerebro);              /// Calculando a decis�o da rede
-            RNA_CopiarDaSaida(Dinossauros[i].Cerebro, Saida);       /// Extraindo a decis�o para vetor ''saida''
+    RNA_CopiarParaEntrada(Dinossauros[i].Cerebro, Entrada);
+    RNA_CalcularSaida(Dinossauros[i].Cerebro);
+    RNA_CopiarDaSaida(Dinossauros[i].Cerebro, Saida);
 
             if (Saida[0] == 0.0)
                 Pular = 0;
@@ -203,28 +208,58 @@ void ControlarEstadoDinossauros() /// Fun��o responsavel por calcular a deci
             }
             Dinossauros[i].AviaoCooldown = Dinossauros[i].AviaoCooldown - fabs(VELOCIDADE);
 
-            if (Dinossauros[i].Estado == 0) /// Em p�
+    if (MODO_JOGO == 1)
             {
+        if (Dinossauros[i].Estado == 0) /// Em pé
                 Dinossauros[i].SpriteAtual = 0 + Dinossauros[i].Frame;
-            }
             if (Dinossauros[i].Estado == 1) /// Deitado
-            {
                 Dinossauros[i].SpriteAtual = 2 + Dinossauros[i].Frame;
-            }
             if (Dinossauros[i].Estado == 2) /// Pulando
-            {
                 Dinossauros[i].SpriteAtual = 4 + Dinossauros[i].Frame;
-            }
             if (Dinossauros[i].Estado == 3) /// Muerto
-            {
                 Dinossauros[i].SpriteAtual = 6 + Dinossauros[i].Frame;
-            }
             if (Dinossauros[i].Estado == 4) /// Voando
-            {
                 Dinossauros[i].SpriteAtual = 8 + Dinossauros[i].Frame;
             }
         }
+
+void ProcessarColisaoDino(int i)
+{
+    if (Dinossauros[i].Estado == 3)
+        return;
+
+    int IndiceObstaculo = ProcurarProximoObstaculo(Dinossauros[i].X);
+    int FatorDeCorrecaoHorizontal = 7;
+    int FatorDeCorrecaoVertical = 5;
+
+    double XObstaculo = obstaculo[IndiceObstaculo].X;
+    double YObstaculo = obstaculo[IndiceObstaculo].Y;
+    double AlturaObstaculo = obstaculo[IndiceObstaculo].sprite[obstaculo[IndiceObstaculo].FrameAtual]->Altura;
+    double LarguraObstaculo = obstaculo[IndiceObstaculo].sprite[obstaculo[IndiceObstaculo].FrameAtual]->Largura;
+
+    double DinoX = Dinossauros[i].X + FatorDeCorrecaoHorizontal;
+    double DinoY = Dinossauros[i].Y + FatorDeCorrecaoVertical;
+    double DinoLarg = Dinossauros[i].sprite[Dinossauros[i].SpriteAtual].Largura - 2 * FatorDeCorrecaoHorizontal;
+    double DinoAlt = Dinossauros[i].sprite[Dinossauros[i].SpriteAtual].Altura - 2 * FatorDeCorrecaoVertical;
+
+    if (verificarColisao(DinoX, DinoY, DinoLarg, DinoAlt,
+                         XObstaculo, YObstaculo, LarguraObstaculo, AlturaObstaculo) == 1)
+    {
+        Dinossauros[i].Estado = 3;
+        mortesNoTick.fetch_add(1, std::memory_order_relaxed);
     }
+}
+
+void AplicarColisaoParalelo()
+{
+    mortesNoTick.store(0);
+    nnThreadPool->parallelFor(0, QuantidadeDinossauros, ProcessarColisaoDino);
+    DinossaurosMortos += mortesNoTick.load();
+}
+
+void ControlarEstadoDinossauros()
+{
+    nnThreadPool->parallelFor(0, QuantidadeDinossauros, ProcessarDinossauroNN);
 }
 
 void InicializarNovaPartida()
