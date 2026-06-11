@@ -27,6 +27,9 @@ double getRandomValue()
 
 void getNextObstaculo(Obstaculo *obs, int Indice)
 {
+    if (Indice >= OBSTACULOS_MODELO_TAMANHO)
+        return;
+
     obs->X = obstaculosModelo[Indice].X;
     obs->Y = obstaculosModelo[Indice].Y;
     obs->Tipo = obstaculosModelo[Indice].Tipo;

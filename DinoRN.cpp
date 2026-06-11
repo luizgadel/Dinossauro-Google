@@ -395,7 +395,7 @@ void SimulacaoThread(EvolutionaryStrategy *strategy)/// Thread da simulacao (tic
             }
 
             DistanciaAtual = DistanciaAtual + fabs(VELOCIDADE);
-            if (DistanciaAtual > 1000000 && DistanciaAtual > DistanciaRecorde)
+            if (ObstaculoDaVez >= OBSTACULOS_MODELO_TAMANHO)
             {
                 DinossaurosMortos = POPULACAO_TAMANHO;
             }

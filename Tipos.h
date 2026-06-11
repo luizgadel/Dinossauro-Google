@@ -6,6 +6,7 @@
 
 #define QTD_SPRITE_CACTUS 6
 #define MAX_OBSTACULOS 7
+#define OBSTACULOS_MODELO_TAMANHO 20000
 
 typedef struct dinossauro
 {

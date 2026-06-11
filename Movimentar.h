@@ -50,7 +50,7 @@ void MovimentarObstaculos()
         obstaculo[i].X = obstaculo[i].X + VELOCIDADE;
         Largura = obstaculo[i].sprite[0]->Largura;
 
-        if (obstaculo[i].X + Largura < -10)
+        if (obstaculo[i].X + Largura < -10 && ObstaculoDaVez < OBSTACULOS_MODELO_TAMANHO)
         {
             getNextObstaculo(&obstaculo[i], ObstaculoDaVez);
             obstaculo[i].X = obstaculo[i].X - DistanciaAtual;

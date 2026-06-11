@@ -12,7 +12,7 @@ Grafico grafico;
 Dinossauro *MelhorDinossauro;
 
 Obstaculo obstaculo[MAX_OBSTACULOS];
-Obstaculo obstaculosModelo[20000];
+Obstaculo obstaculosModelo[OBSTACULOS_MODELO_TAMANHO];
 
 int Fonte, FonteVermelha, FonteAzul;
 double VELOCIDADE;

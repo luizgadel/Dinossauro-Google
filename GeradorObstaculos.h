@@ -34,7 +34,7 @@ void GerarListaObstaculos()
     else
         obstaculosModelo[0].Y = 15;
 
-    for (int i = 1; i < 20000; i++)
+    for (int i = 1; i < OBSTACULOS_MODELO_TAMANHO; i++)
     {
         obstaculosModelo[i].Tipo = TipoObstaculoAleatorio();
 
@@ -58,7 +58,7 @@ void GerarListaObstaculos()
     }
 
     FILE *f = fopen("obstaculos.dat", "wb");
-    fwrite(obstaculosModelo, 20000, sizeof(Obstaculo), f);
+    fwrite(obstaculosModelo, OBSTACULOS_MODELO_TAMANHO, sizeof(Obstaculo), f);
     fclose(f);
 }
 
@@ -121,6 +121,6 @@ void GerarListaObstaculosTreinoSemEspinho()
 void CarregarListaObstaculos()
 {
     FILE *f = fopen("obstaculos.dat", "rb");
-    fread(obstaculosModelo, 20000, sizeof(Obstaculo), f);
+    fread(obstaculosModelo, OBSTACULOS_MODELO_TAMANHO, sizeof(Obstaculo), f);
     fclose(f);
 }
