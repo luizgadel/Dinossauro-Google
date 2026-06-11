@@ -1,4 +1,4 @@
-
+#define NUM_NN_WORKER_THREADS 0 /// 0 = auto: max(1, hardware_concurrency() - 2)
 
 PIG_Cor Cores[8] = {CINZA, AMARELO, VERDE, VERMELHO, AZUL, CIANO, LARANJA, ROXO};
 
