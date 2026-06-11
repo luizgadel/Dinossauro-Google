@@ -24,9 +24,25 @@ DinoRN DRNRechenbergES(char *indice = "0")
 int main(int argc, char *args[])
 {
     char *indice = (argc > 1) ? args[1] : (char *)"0";
-    DinoRN dinoneural;
+    bool useES = false;
+    unsigned int seed = 0;
 
     if (argc > 2 && strcmp(args[2], "ES") == 0)
+    {
+        useES = true;
+        if (argc > 3)
+            seed = (unsigned int)atoi(args[3]);
+    }
+    else if (argc > 2)
+    {
+        seed = (unsigned int)atoi(args[2]);
+    }
+
+    obstaculosSeedFixa = seed;
+
+    DinoRN dinoneural;
+
+    if (useES)
         dinoneural = DRNRechenbergES(indice);
     else
         dinoneural = DRNGeneticAlgorithm(indice);
