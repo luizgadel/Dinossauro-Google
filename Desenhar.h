@@ -12,14 +12,8 @@ PIG_Cor calcularCor(double Intensidade, PIG_Cor CorBase)
     return CorBase;
 }
 
-PIG_Cor AzulGraficoOpacidade(int alpha)
-{
-    if (alpha > 255)
-        alpha = 255;
-    if (alpha < 0)
-        alpha = 0;
-    return (PIG_Cor){0, 0, 255, (Uint8)alpha};
-}
+#define AZUL_GRAFICO_PARTIDA ((PIG_Cor){0, 0, 64, 255})
+#define AZUL_GRAFICO_PARCIAL ((PIG_Cor){0, 0, 128, 255})
 
 void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
 {
@@ -265,11 +259,6 @@ void DesenharGrafico(int X, int Y, int Largura, int Altura)
 
     scala = fitnessMaxEixo / (double)Altura;
 
-    int opacidadePartida = 255 / PARTIDAS_POR_GERACAO;
-    int opacidadeParcial = (255 * (partidaAtual + 1)) / PARTIDAS_POR_GERACAO;
-    PIG_Cor azulPartida = AzulGraficoOpacidade(opacidadePartida);
-    PIG_Cor azulParcial = AzulGraficoOpacidade(opacidadeParcial);
-
     if (GeracaoCompleta == 0)
     {
         scalaHorizontal = 0;
@@ -329,16 +318,16 @@ void DesenharGrafico(int X, int Y, int Largura, int Altura)
             DesenharPonto(PontoX, YBest, AZUL, 3);
 
         if (i == GeracaoCompleta - 1 && GeracaoCompleta > 0)
-            DesenharPonto(PontoX, (int)YBest, azulPartida, 3);
+            DesenharPonto(PontoX, (int)YBest, AZUL_GRAFICO_PARTIDA, 3);
 
         if (i == GeracaoCompleta)
         {
-            DesenharPonto(PontoX, (int)YBest, azulParcial, 3);
+            DesenharPonto(PontoX, (int)YBest, AZUL_GRAFICO_PARCIAL, 3);
 
             int YPartida = Y + 1 + (int)(BestFitnessGeracao() / scala);
             if (YPartida > yTopo)
                 YPartida = yTopo;
-            DesenharPonto(PontoX, YPartida, azulPartida, 3);
+            DesenharPonto(PontoX, YPartida, AZUL_GRAFICO_PARTIDA, 3);
         }
     }
 
@@ -355,7 +344,7 @@ void DesenharGrafico(int X, int Y, int Largura, int Altura)
             YGreenN1 = yTopo;
         if (YGreenN > yTopo)
             YGreenN = yTopo;
-        DesenharLinhaSimples(PontoXN1, YGreenN1, PontoXN, YGreenN, azulPartida);
+        DesenharLinhaSimples(PontoXN1, YGreenN1, PontoXN, YGreenN, AZUL_GRAFICO_PARTIDA);
     }
 }
 
