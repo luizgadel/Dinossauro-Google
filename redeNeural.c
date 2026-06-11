@@ -146,7 +146,7 @@ int RNA_QuantidadePesos(RedeNeural *Rede)
     int Soma = 0;
     for (int i = 0; i < Rede->QuantidadeEscondidas; i++)
     {
-        for (int j = 0; j < Rede->CamadaEscondida[i].QuantidadeNeuronios; j++)
+        for (int j = 0; j < Rede->CamadaEscondida[i].QuantidadeNeuronios - 1; j++)
         {
             Soma = Soma + Rede->CamadaEscondida[i].Neuronios[j].QuantidadeLigacoes;
         }
