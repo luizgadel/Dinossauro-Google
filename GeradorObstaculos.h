@@ -1,16 +1,41 @@
+#include <stdlib.h>
+#include <time.h>
 
+/// srand() afeta todo rand() do processo (obstáculos, AG, posição inicial dos dinos).
+void DefinirSeedObstaculos()
+{
+    unsigned int seed;
+
+    if (obstaculosSeedFixa > 0)
+        seed = obstaculosSeedFixa;
+    else
+        seed = (unsigned int)time(nullptr) ^ (unsigned int)Geracao;
+
+    srand(seed);
+}
+
+int TipoObstaculoAleatorio()
+{
+    return OBSTACULO_TIPO_MIN + rand() % OBSTACULO_TIPO_COUNT;
+}
 
 void GerarListaObstaculos()
 {
+    DefinirSeedObstaculos();
+
     int Largura;
 
     obstaculosModelo[0].X = 1250;
-    obstaculosModelo[0].Y = 15;
-    obstaculosModelo[0].Tipo = 5;
+    obstaculosModelo[0].Tipo = TipoObstaculoAleatorio();
+
+    if (obstaculosModelo[0].Tipo == PASSARO_CODIGO_TIPO)
+        obstaculosModelo[0].Y = 20 + rand() % 65;
+    else
+        obstaculosModelo[0].Y = 15;
 
     for (int i = 1; i < 20000; i++)
     {
-        obstaculosModelo[i].Tipo = rand() % 6;
+        obstaculosModelo[i].Tipo = TipoObstaculoAleatorio();
 
         /// ---------------
 
@@ -36,6 +61,7 @@ void GerarListaObstaculos()
     fclose(f);
 }
 
+/// Legado / debug — não usada no fluxo de treino atual. Ver GerarListaObstaculos().
 void GerarListaObstaculosTreinoSemEspinho()
 {
     int Largura;
