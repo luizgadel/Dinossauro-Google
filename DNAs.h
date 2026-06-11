@@ -21,6 +21,20 @@ double BestFitnessGeracao()
     return Maior;
 }
 
+double BestFitnessGeracaoParcial()
+{
+    int partidasContadas = partidaAtual + 1;
+    double Maior = 0;
+
+    for (int i = 0; i < POPULACAO_TAMANHO; i++)
+    {
+        double mediaParcial = (FitnessSoma[i] + Dinossauros[i].Fitness) / partidasContadas;
+        if (mediaParcial > Maior)
+            Maior = mediaParcial;
+    }
+    return Maior;
+}
+
 double MediaFitnessGeracao()
 {
     double Media = 0;
@@ -43,6 +57,20 @@ double BestFitnessEver()
         }
     }
     return Maior;
+}
+
+#define GRAPH_YMAX_INICIAL 15000.0
+
+double FitnessMaximoGrafico()
+{
+    if (GeracaoCompleta == 0)
+        return GRAPH_YMAX_INICIAL;
+
+    double ref = BestFitnessPopulacao[GeracaoCompleta - 1];
+    if (ref <= 0)
+        return GRAPH_YMAX_INICIAL;
+
+    return ref * 3.0;
 }
 
 void InicializarDNA()

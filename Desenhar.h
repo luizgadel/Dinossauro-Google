@@ -12,6 +12,15 @@ PIG_Cor calcularCor(double Intensidade, PIG_Cor CorBase)
     return CorBase;
 }
 
+PIG_Cor AzulGraficoOpacidade(int alpha)
+{
+    if (alpha > 255)
+        alpha = 255;
+    if (alpha < 0)
+        alpha = 0;
+    return (PIG_Cor){0, 0, 255, (Uint8)alpha};
+}
+
 void DesenharRedeNeural(int X, int Y, int Largura, int Altura)
 {
     double NeuroEntradaX[DINO_BRAIN_QTD_INPUT];
@@ -251,15 +260,15 @@ void DesenharGrafico(int X, int Y, int Largura, int Altura)
 
     double scala;
     double scalaHorizontal;
+    double fitnessMaxEixo = FitnessMaximoGrafico();
+    int yTopo = Y + Altura;
 
-    if (BestFitnessGeracao() > BestFitnessEver())
-    {
-        scala = BestFitnessGeracao() / (double)Altura;
-    }
-    else
-    {
-        scala = BestFitnessEver() / (double)Altura;
-    }
+    scala = fitnessMaxEixo / (double)Altura;
+
+    int opacidadePartida = 255 / PARTIDAS_POR_GERACAO;
+    int opacidadeParcial = (255 * (partidaAtual + 1)) / PARTIDAS_POR_GERACAO;
+    PIG_Cor azulPartida = AzulGraficoOpacidade(opacidadePartida);
+    PIG_Cor azulParcial = AzulGraficoOpacidade(opacidadeParcial);
 
     if (GeracaoCompleta == 0)
     {
@@ -296,7 +305,7 @@ void DesenharGrafico(int X, int Y, int Largura, int Altura)
         if (i == GeracaoCompleta)
         {
             YMedia = Y + 1 + (int)(MediaFitnessGeracao() / scala);
-            YBest = Y + 1 + (int)(BestFitnessGeracao() / scala);
+            YBest = Y + 1 + (int)(BestFitnessGeracaoParcial() / scala);
         }
         else
         {
@@ -304,18 +313,50 @@ void DesenharGrafico(int X, int Y, int Largura, int Altura)
             YBest = Y + 1 + (int)(BestFitnessPopulacao[i] / scala);
         }
 
+        if (YMedia > yTopo)
+            YMedia = yTopo;
+        if (YBest > yTopo)
+            YBest = yTopo;
+
         DesenharPonto(PontoX, YMedia, VERMELHO, 3);
         PontosMedia[i].x = PontoX;
         PontosMedia[i].y = ALT_TELA - YMedia;
 
-        DesenharPonto(PontoX, YBest, AZUL, 3);
         PontosBest[i].x = PontoX;
         PontosBest[i].y = ALT_TELA - YBest;
+
+        if (i != GeracaoCompleta)
+            DesenharPonto(PontoX, YBest, AZUL, 3);
+
+        if (i == GeracaoCompleta - 1 && GeracaoCompleta > 0)
+            DesenharPonto(PontoX, (int)YBest, azulPartida, 3);
+
+        if (i == GeracaoCompleta)
+        {
+            DesenharPonto(PontoX, (int)YBest, azulParcial, 3);
+
+            int YPartida = Y + 1 + (int)(BestFitnessGeracao() / scala);
+            if (YPartida > yTopo)
+                YPartida = yTopo;
+            DesenharPonto(PontoX, YPartida, azulPartida, 3);
+        }
     }
 
     DesenharLinhas(PontosBest, GeracaoCompleta + 1, AZUL);
     DesenharLinhas(PontosMedia, GeracaoCompleta + 1, VERMELHO);
-    // DesenharLinhas(PontosMediaFilhos, GeracaoCompleta, VERDE);
+
+    if (GeracaoCompleta > 0)
+    {
+        int PontoXN1 = X + 1 + ((GeracaoCompleta - 1) * scalaHorizontal);
+        int PontoXN = X + 1 + (GeracaoCompleta * scalaHorizontal);
+        int YGreenN1 = Y + 1 + (int)(BestFitnessPopulacao[GeracaoCompleta - 1] / scala);
+        int YGreenN = Y + 1 + (int)(BestFitnessGeracao() / scala);
+        if (YGreenN1 > yTopo)
+            YGreenN1 = yTopo;
+        if (YGreenN > yTopo)
+            YGreenN = yTopo;
+        DesenharLinhaSimples(PontoXN1, YGreenN1, PontoXN, YGreenN, azulPartida);
+    }
 }
 
 void DesenharObstaculos()
@@ -425,6 +466,13 @@ void DrawGenInfo(char *String, int margin, int BASE, char evoMethodName[100])
     EscreverEsquerda(String, margin, BASE, Fonte);
 
     BASE -= margin;
+    if (MODO_JOGO == 0)
+    {
+        sprintf(String, "Partida: %d / %d", partidaAtual + 1, PARTIDAS_POR_GERACAO);
+        EscreverEsquerda(String, margin, BASE, Fonte);
+        BASE -= margin;
+    }
+
     if (Periodo <= 0.0)
         sprintf(String, "Clock: %.5f s (maximo)");
     else
