@@ -1,16 +1,26 @@
 #include<vector>
 #include <fstream>
+#include <chrono>
+#include <ctime>
 
 using namespace std;
 
 class EvolutionaryStrategy
 {
 private:
+    void FormatarDataHoraConclusao(char *buffer, size_t tamanho)
+    {
+        std::time_t t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
+        std::tm tmLocal = *std::localtime(&t);
+        strftime(buffer, tamanho, "%Y-%m-%d %H:%M:%S", &tmLocal);
+    }
+
     void WriteBestFinessToCSV(vector<Dinossauro> &d)
     {
         ofstream scoresFile;
         char String[1000];
-        char msg[] = "%s, %d, %.0f, %.0f, %d,%s\n";
+        char dataHoraConclusao[32];
+        char msg[] = "%s, %d, %.0f, %.0f, %d,%s,%s\n";
         char filename[1000];
         char filenameTemplate[] = "data/scores-%s-%d.csv";
 
@@ -25,7 +35,8 @@ private:
         sprintf(filename, filenameTemplate, _name, _indice);
         scoresFile.open(filename, ios::app);
 
-        sprintf(String, msg, _name, Geracao, DistanciaRecorde, bestFitness, POPULACAO_TAMANHO, _args);
+        FormatarDataHoraConclusao(dataHoraConclusao, sizeof(dataHoraConclusao));
+        sprintf(String, msg, _name, Geracao, DistanciaRecorde, bestFitness, POPULACAO_TAMANHO, _args, dataHoraConclusao);
         scoresFile << String;
         scoresFile.close();
     }

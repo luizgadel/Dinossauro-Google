@@ -121,7 +121,7 @@ void ExibirResumoFinalExecucao(const char *horaInicio, const char *horaFim, doub
 
 bool VerificaCondicaoFim()
 {
-    return (Geracao == 300);
+    return (Geracao == 200);
 }
 void AplicarGravidade()
 {
@@ -503,10 +503,13 @@ public:
 
                 {
                     std::lock_guard<std::mutex> lock(gameStateMutex);
-                    d = arrayToVector(Dinossauros);
-                    tie(topN, topNPositions) = getTopN(d, 10);
-                    positions = topNPositions;
-                    d = topN;
+                    if (DesenharDNA == 1)
+                    {
+                        d = arrayToVector(Dinossauros);
+                        tie(topN, topNPositions) = getTopN(d, 10);
+                        positions = topNPositions;
+                        d = topN;
+                    }
                     bestDinoCopy = lastGenBestDino;
                     strcpy(methodNameCopy, evoMethodName);
                 }

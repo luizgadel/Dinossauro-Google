@@ -633,15 +633,18 @@ void Desenhar(vector<Dinossauro> topN, vector<int> topNPositions, Dinossauro las
         int yTopFive = 500;
         int xMargin = 10;
         int yMargin = 25;
-        
-        if (Geracao > 0)
-        {
-            DrawDino(lastGenBestDino, 0, 0, xTopFive, xMargin, yTopFive, yMargin);
-        }
-        
-        yTopFive -= yMargin * 1.2;
 
-        DrawTopN(topN, topNPositions, String, xTopFive, yTopFive, xMargin, yMargin);
+        if (DesenharDNA == 1)
+        {
+            if (Geracao > 0)
+            {
+                DrawDino(lastGenBestDino, 0, 0, xTopFive, xMargin, yTopFive, yMargin);
+            }
+
+            yTopFive -= yMargin * 1.2;
+
+            DrawTopN(topN, topNPositions, String, xTopFive, yTopFive, xMargin, yMargin);
+        }
 
         EncerrarDesenho();
     }

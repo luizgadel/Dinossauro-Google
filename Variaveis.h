@@ -28,6 +28,7 @@ int DinossaurosMortos;
 int ObstaculoDaVez = 1;
 int Geracao;
 int DesenharTela = 1;
+int DesenharDNA = 0;
 
 unsigned int obstaculosSeedFixa = 0; /// 0 = seed automática independente por partida; >0 = seed fixa via CLI
 
