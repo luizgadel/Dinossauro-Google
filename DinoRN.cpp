@@ -35,6 +35,7 @@
 
 #include <thread>
 #include <chrono>
+#include <ctime>
 #include <vector>
 #include <mutex>
 #include <memory>
@@ -84,6 +85,38 @@ int ResolverNumNNWorkerThreads()
         return 1;
     }
     return static_cast<int>(hw) - 2;
+}
+
+void FormatarHoraLocal(const std::chrono::system_clock::time_point &instante, char *buffer, size_t tamanho)
+{
+    std::time_t t = std::chrono::system_clock::to_time_t(instante);
+    std::tm tmLocal = *std::localtime(&t);
+    strftime(buffer, tamanho, "%H:%M:%S", &tmLocal);
+}
+
+void ExibirResumoFinalExecucao(const char *horaInicio, const char *horaFim, double tempoTotal)
+{
+    char duracao[32];
+    FormatarDuracao(tempoTotal, duracao);
+
+    std::cout << std::endl
+              << "--- Execucao finalizada ---" << std::endl
+              << "Inicio: " << horaInicio << std::endl
+              << "Fim: " << horaFim << std::endl
+              << "Tempo total: " << duracao << std::endl;
+
+    char String[1000];
+    while (PIG_jogoRodando() == 1)
+    {
+        AtualizarJanela();
+
+        IniciarDesenho();
+        DesenharResumoExecucao(String, horaInicio, horaFim, tempoTotal);
+        EncerrarDesenho();
+
+        if (PIG_tecla != 0)
+            break;
+    }
 }
 
 bool VerificaCondicaoFim()
@@ -288,6 +321,7 @@ void ConfiguracoesIniciais()
 
     TimerGeral = CriarTimer();
     TimerSimTPS = CriarTimer();
+    TempoExecucao = 0.0;
     Fonte = CriarFonteNormal("fontes/arial.ttf", 15, PRETO, 0, PRETO);
     FonteVermelha = CriarFonteNormal("fontes/arial.ttf", 15, VERMELHO, 0, PRETO);
     FonteAzul = CriarFonteNormal("fontes/arial.ttf", 15, AZUL, 0, PRETO);
@@ -442,9 +476,20 @@ public:
         std::thread simThread(SimulacaoThread, strategy_.get());
 
         int renderFrame = 0;
+        double ultimaAtualizacaoTempoExecucao = 0.0;
+        auto inicioExecucao = std::chrono::steady_clock::now();
+        FormatarHoraLocal(std::chrono::system_clock::now(), HoraInicioExecucao, sizeof(HoraInicioExecucao));
 
         while (PIG_jogoRodando() == 1 && !VerificaCondicaoFim())
         {
+            auto agora = std::chrono::steady_clock::now();
+            double tempoDecorridoTotal = std::chrono::duration<double>(agora - inicioExecucao).count();
+            if (tempoDecorridoTotal - ultimaAtualizacaoTempoExecucao >= 1.0)
+            {
+                TempoExecucao = tempoDecorridoTotal;
+                ultimaAtualizacaoTempoExecucao = tempoDecorridoTotal;
+            }
+
             AtualizarJanela();
             VerificarTeclas();
             renderFrame++;
@@ -472,6 +517,13 @@ public:
 
         simThread.join();
         nnThreadPool.reset();
+
+        auto fimExecucao = std::chrono::steady_clock::now();
+        TempoExecucao = std::chrono::duration<double>(fimExecucao - inicioExecucao).count();
+        char horaFimExecucao[16];
+        FormatarHoraLocal(std::chrono::system_clock::now(), horaFimExecucao, sizeof(horaFimExecucao));
+        ExibirResumoFinalExecucao(HoraInicioExecucao, horaFimExecucao, TempoExecucao);
+
         FinalizarJanela();
     }
 };

@@ -18,6 +18,8 @@ int Fonte, FonteVermelha, FonteAzul;
 double VELOCIDADE;
 int TimerGeral = 0;
 int TimerSimTPS = 0;
+double TempoExecucao = 0.0;
+char HoraInicioExecucao[16] = "00:00:00";
 double SimTPS = 0.0;
 double Periodo = 0.0005;
 double DistanciaRecorde, DistanciaAtual;

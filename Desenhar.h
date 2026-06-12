@@ -439,6 +439,59 @@ void DesenharDinossauros()
     }
 }
 
+void FormatarDuracao(double segundos, char *String)
+{
+    int totalSec = (int)segundos;
+    int h = totalSec / 3600;
+    int m = (totalSec % 3600) / 60;
+    int s = totalSec % 60;
+
+    if (h > 0)
+        sprintf(String, "%02d:%02d:%02d", h, m, s);
+    else
+        sprintf(String, "%02d:%02d", m, s);
+}
+
+void DrawTempoExecucao(char *String)
+{
+    sprintf(String, "Inicio: %s", HoraInicioExecucao);
+    EscreverDireita(String, LARG_TELA - 10, ALT_TELA - 75, Fonte);
+
+    char duracao[32];
+    FormatarDuracao(TempoExecucao, duracao);
+    sprintf(String, "Tempo: %s", duracao);
+    EscreverDireita(String, LARG_TELA - 10, ALT_TELA - 55, Fonte);
+}
+
+void DesenharResumoExecucao(char *String, const char *horaInicio, const char *horaFim, double tempoTotal)
+{
+    int margin = 80;
+    int y = ALT_TELA / 2 + 40;
+    char duracao[32];
+
+    DesenharRetangulo(0, 0, ALT_TELA, LARG_TELA, BRANCO);
+
+    sprintf(String, "Execucao finalizada");
+    EscreverEsquerda(String, margin, y, Fonte);
+    y -= 30;
+
+    sprintf(String, "Inicio: %s", horaInicio);
+    EscreverEsquerda(String, margin, y, Fonte);
+    y -= 25;
+
+    sprintf(String, "Fim: %s", horaFim);
+    EscreverEsquerda(String, margin, y, Fonte);
+    y -= 25;
+
+    FormatarDuracao(tempoTotal, duracao);
+    sprintf(String, "Tempo total: %s", duracao);
+    EscreverEsquerda(String, margin, y, Fonte);
+    y -= 40;
+
+    sprintf(String, "Pressione uma tecla para sair");
+    EscreverEsquerda(String, margin, y, FonteAzul);
+}
+
 void DrawFPS(char *String)
 {
     sprintf(String, "Render: %.0f fps", PegarFPS());
@@ -446,6 +499,8 @@ void DrawFPS(char *String)
 
     sprintf(String, "Sim: %.0f t/s", SimTPS);
     EscreverDireita(String, LARG_TELA - 10, ALT_TELA - 35, Fonte);
+
+    DrawTempoExecucao(String);
 }
 
 void DrawGenInfo(char *String, int margin, int BASE, char evoMethodName[100])
